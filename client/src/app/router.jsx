@@ -7,6 +7,7 @@ import { LoginPage } from '../pages/Auth/LoginPage';
 import { RegisterPage } from '../pages/Auth/RegisterPage';
 
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute';
+import { ProblemExplorerPage } from '../pages/ProblemExplorer/ProblemExplorerPage';
 
 export const router = createBrowserRouter([
   {
@@ -23,9 +24,9 @@ export const router = createBrowserRouter([
         children: [
           {
             path: 'problems',
-            element: <div className='p-8 text-center'>Problem Explorer (Phase 4)</div>,
+            element: <ProblemExplorerPage />,
           },
-          /* Profile, Submission, Leaderboard, etc. */
+          /* Submission, Leaderboard, etc. */
         ],
       },
     ],

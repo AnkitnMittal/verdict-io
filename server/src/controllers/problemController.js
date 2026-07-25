@@ -1,8 +1,8 @@
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
-import { Problem } from '../models/problemModel.js';
-import { TestCase } from '../models/testCaseModel.js';
+import { Problem } from '../models/Problem.js';
+import { TestCase } from '../models/TestCase.js';
 
 /**
  * @desc    Get all problems with pagination, filtering, and search
@@ -14,13 +14,16 @@ export const getProblems = asyncHandler(async (req, res) => {
 
   const query = {};
   if (difficulty) query.difficulty = difficulty;
-  if (topic) query.topic = topic;
+  if (topic) query.topics = topic;
   if (search) query.title = { $regex: search, $options: 'i' };
+
+  const pageNumber = Number(page);
+  const limitNumber = Number(limit);
 
   const problems = await Problem.find(query)
     .select('-statement -skeletonCode')
-    .limit(limit * 1)
-    .skip((page - 1) * limit)
+    .limit(limitNumber)
+    .skip((pageNumber - 1) * limitNumber)
     .sort({ createdAt: -1 });
 
   const total = await Problem.countDocuments(query);
@@ -30,8 +33,8 @@ export const getProblems = asyncHandler(async (req, res) => {
       200,
       {
         problems,
-        totalPages: Math.ceil(total / limit),
-        currentPage: Number(page),
+        totalPages: Math.ceil(total / limitNumber),
+        currentPage: pageNumber,
         totalProblems: total,
       },
       'Problems fetched successfully',
@@ -45,8 +48,8 @@ export const getProblems = asyncHandler(async (req, res) => {
  * @access  Public
  */
 export const getProblemById = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const problem = await Problem.findOne({ problemId: id });
+  const { problemId } = req.params;
+  const problem = await Problem.findOne({ problemId });
 
   if (!problem) {
     throw new ApiError(404, 'Problem not found');
