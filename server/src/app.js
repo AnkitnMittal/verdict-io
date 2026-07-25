@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 
 import { ApiError } from './utils/ApiError.js';
 import authRoutes from './routes/authRoutes.js';
+import problemRoutes from './routes/problemRoutes.js';
 
 const app = express();
 
@@ -20,8 +21,9 @@ app.use(cookieParser());
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 
-/* Authentication routes */
+/* Route handlers */
 app.use('/api/auth', authRoutes);
+app.use('/api/problems', problemRoutes);
 
 /* Health check Route to verify if the API is running */
 app.get('/health', (req, res) => {
