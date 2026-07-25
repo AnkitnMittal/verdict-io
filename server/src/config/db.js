@@ -6,7 +6,7 @@ const connectDB = async () => {
       throw new Error('MONGODB_URI is missing in .env file.');
     }
 
-    const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/verdictio`);
+    const connectionInstance = await mongoose.connect(process.env.MONGODB_URI);
     console.log(`\n MongoDB connected! Host: ${connectionInstance.connection.host}`);
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);

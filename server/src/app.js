@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 
+import { ApiError } from './utils/ApiError.js';
 import authRoutes from './routes/authRoutes.js';
 
 const app = express();
@@ -27,14 +28,28 @@ app.get('/health', (req, res) => {
   res.status(200).json({ success: true, message: 'VerdictIO API is running healthy.' });
 });
 
+/* Handle 404 errors for undefined routes */
+app.use((req, res, next) => {
+  next(new ApiError(404, `Route ${req.originalUrl} not found`));
+});
+
 /* Global Error Handling Middleware */
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';
 
+  if (statusCode >= 500) {
+    console.error('\n========== SERVER ERROR ==========');
+    console.error(`${req.method} ${req.originalUrl}`);
+    console.error(err.stack);
+    console.error('==================================\n');
+  } else {
+    console.warn(`${req.method} ${req.originalUrl} -> ${statusCode} : ${message}`);
+  }
+
   return res.status(statusCode).json({
-    statusCode,
     success: false,
+    statusCode,
     message,
     errors: err.errors || [],
     data: null,
