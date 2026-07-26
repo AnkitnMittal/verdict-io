@@ -5,9 +5,10 @@ import App from '../App';
 import { HomePage } from '../pages/Home/HomePage';
 import { LoginPage } from '../pages/Auth/LoginPage';
 import { RegisterPage } from '../pages/Auth/RegisterPage';
+import { ProblemExplorerPage } from '../pages/ProblemExplorer/ProblemExplorerPage';
 
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute';
-import { ProblemExplorerPage } from '../pages/ProblemExplorer/ProblemExplorerPage';
+import { ProblemManagerPage } from '../pages/Admin/ProblemManagerPage';
 
 export const router = createBrowserRouter([
   {
@@ -15,18 +16,25 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: '/login', element: <LoginPage /> },
-      { path: '/register', element: <RegisterPage /> },
+      { path: 'login', element: <LoginPage /> },
+      { path: 'register', element: <RegisterPage /> },
 
       /* Protected Routes for authenticated users */
       {
         element: <ProtectedRoute />,
         children: [
+          { path: 'problems', element: <ProblemExplorerPage /> },
           {
-            path: 'problems',
-            element: <ProblemExplorerPage />,
+            element: <ProtectedRoute allowedRoles={['admin']} />,
+            children: [
+              {
+                path: 'admin/problems/new',
+                element: <ProblemManagerPage />,
+              },
+            ],
           },
-          /* Submission, Leaderboard, etc. */
+          /* Additional protected routes for authenticated users can be added here
+          Submission, Leaderboard, etc. */
         ],
       },
     ],
