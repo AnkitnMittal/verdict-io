@@ -22,6 +22,7 @@ const initialState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
+  isInitialized: false,
   error: null,
 };
 
@@ -38,11 +39,13 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isAuthenticated = true;
       state.isLoading = false;
+      state.error = null;
     },
     clearAuth: (state) => {
       state.user = null;
       state.isAuthenticated = false;
       state.isLoading = false;
+      state.error = null;
     },
     setAuthLoading: (state, action) => {
       state.isLoading = action.payload;
@@ -57,11 +60,14 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthenticated = true;
         state.isLoading = false;
+        state.isInitialized = true;
+        state.error = null;
       })
       .addCase(fetchCurrentUser.rejected, (state, action) => {
         state.user = null;
         state.isAuthenticated = false;
         state.isLoading = false;
+        state.isInitialized = true;
         state.error = action.payload;
       });
   },

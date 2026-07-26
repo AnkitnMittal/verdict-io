@@ -9,7 +9,9 @@ import { setAuth, clearAuth } from '../authSlice';
  */
 export const useAuth = () => {
   const dispatch = useDispatch();
-  const { user, isAuthenticated, isLoading, error } = useSelector((state) => state.auth);
+  const { user, isAuthenticated, isLoading, isInitialized, error } = useSelector(
+    (state) => state.auth,
+  );
 
   const login = async (credentials) => {
     const res = await authApi.login(credentials);
@@ -27,5 +29,5 @@ export const useAuth = () => {
     dispatch(clearAuth());
   };
 
-  return { user, isAuthenticated, isLoading, error, login, register, logout };
+  return { user, isAuthenticated, isLoading, isInitialized, error, login, register, logout };
 };
