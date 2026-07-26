@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 export const LoginForm = () => {
+  /* useLocation hook to access the state passed from the RegisterPage */
+  const location = useLocation();
+  const defaultEmail = location.state?.email || '';
+
   /* State variables for email, password, and error message */
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 

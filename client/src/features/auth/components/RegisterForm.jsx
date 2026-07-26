@@ -20,7 +20,13 @@ export const RegisterForm = () => {
 
     try {
       await register({ fullName, email, password });
-      navigate('/problems');
+
+      navigate('/login', {
+        state: {
+          message: 'Registration successful. Please log in.',
+          email,
+        },
+      });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     }

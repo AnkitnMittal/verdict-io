@@ -44,10 +44,6 @@ axiosInstance.interceptors.response.use(
         await refreshPromise;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-          window.location.href = '/login';
-        }
-
         return Promise.reject(refreshError);
       } finally {
         refreshPromise = null;
