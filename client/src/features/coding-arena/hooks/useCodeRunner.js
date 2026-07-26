@@ -1,0 +1,31 @@
+import { useState, useEffect } from 'react';
+
+/**
+ * Custom hook to manage code and language state for a coding problem.
+ * It also handles saving and retrieving code drafts from localStorage.
+ */
+export const useCodeRunner = (problemId, initialLanguage = 'cpp', skeletonCode = '') => {
+  const storageKey = `verdictio_draft_${problemId}_${initialLanguage}`;
+
+  const [language, setLanguage] = useState(initialLanguage);
+  const [code, setCode] = useState(() => {
+    return localStorage.getItem(storageKey) || skeletonCode;
+  });
+
+  /* Save code to localStorage when code or language changes */
+  useEffect(() => {
+    if (code) {
+      localStorage.setItem(storageKey, code);
+    }
+  }, [code, storageKey]);
+
+  /* Handle language change and update code accordingly */
+  const handleLanguageChange = (newLanguage, newSkeleton = '') => {
+    setLanguage(newLanguage);
+    const newStorageKey = `verdictio_draft_${problemId}_${newLanguage}`;
+    const savedDraft = localStorage.getItem(newStorageKey);
+    setCode(savedDraft || newSkeleton);
+  };
+
+  return { language, code, setCode, handleLanguageChange };
+};

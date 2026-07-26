@@ -9,6 +9,7 @@ import { ProblemExplorerPage } from '../pages/ProblemExplorer/ProblemExplorerPag
 
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute';
 import { ProblemManagerPage } from '../pages/Admin/ProblemManagerPage';
+import { CodingArenaPage } from '../pages/CodingArena/CodingArenaPage';
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { path: 'problems', element: <ProblemExplorerPage /> },
+          { path: 'problems/:id', element: <CodingArenaPage /> },
           {
             element: <ProtectedRoute allowedRoles={['admin']} />,
             children: [
@@ -33,6 +35,7 @@ export const router = createBrowserRouter([
               },
             ],
           },
+
           /* Additional protected routes for authenticated users can be added here
           Submission, Leaderboard, etc. */
         ],
