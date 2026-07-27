@@ -58,7 +58,6 @@ submissionSchema.pre('save', async function (next) {
     const raw = Buffer.isBuffer(this.code) ? this.code : Buffer.from(this.code, 'utf8');
     this.code = await deflate(raw);
   }
-  next();
 });
 
 /* Middleware for findOneAndUpdate to compress code */
@@ -73,7 +72,6 @@ submissionSchema.pre('findOneAndUpdate', async function (next) {
       update.code = compressed;
     }
   }
-  next();
 });
 
 /* Method to get the decoded code */

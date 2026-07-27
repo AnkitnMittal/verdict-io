@@ -2,8 +2,9 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 
+import { Problem } from '../models/Problem.js';
 import { Submission } from '../models/Submission.js';
-import { SubmissionQueue } from '../queues/submissionQueue.js';
+import { submissionQueue } from '../queues/submissionQueue.js';
 
 /**
  * @desc    Create a new submission and add it to the submission queue for processing.
@@ -17,16 +18,21 @@ export const createSubmission = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Missing required fields: problemId, language, and code are required.');
   }
 
+  const problem = await Problem.findOne({ problemId });
+  if (!problem) {
+    throw new ApiError(404, 'Problem not found');
+  }
+
   const submission = await Submission.create({
     userId: req.user._id,
-    problemId,
+    problemId: problem._id,
     language,
     code,
   });
 
   await submissionQueue.add('evaluate', {
     submissionId: submission._id,
-    problemId,
+    problemId: problem._id,
     language,
     code,
   });
@@ -34,7 +40,7 @@ export const createSubmission = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(
-      new ApiResponse(201, 'Submission created successfully', { submissionId: submission._id }),
+      new ApiResponse(201, { submissionId: submission._id }, 'Submission created successfully'),
     );
 });
 
