@@ -1,12 +1,11 @@
 import { useParams } from 'react-router-dom';
 
 import { SplitPanels } from '../../features/coding-arena/components/SplitPanels';
-import { MonacoEditorWrapper } from '../../features/coding-arena/components/MonacoEditorWrapper';
 import { LanguageSelector } from '../../features/coding-arena/components/LanguageSelector';
+import { MonacoEditorWrapper } from '../../features/coding-arena/components/MonacoEditorWrapper';
 import { ConsoleOutput } from '../../features/coding-arena/components/ConsoleOutput';
 
 /* Expand this hook to fetch a single problem */
-import { useProblems } from '../../features/problems/hooks/useProblems';
 import { useCodeRunner } from '../../features/coding-arena/hooks/useCodeRunner';
 
 export const CodingArenaPage = () => {
@@ -39,7 +38,7 @@ export const CodingArenaPage = () => {
   );
 
   /* Right Panel Content (Console) */
-  const RightPanelBottom = <ConsoleOutput />;
+  const RightPanelBottom = <ConsoleOutput problemId={id} language={language} code={code} />;
 
   return (
     <SplitPanels
