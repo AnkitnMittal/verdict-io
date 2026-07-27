@@ -1,4 +1,10 @@
 import mongoose from 'mongoose';
+import zlib from 'zlib';
+import { promisify } from 'util';
+
+/* Promisify zlib methods for async/await usage */
+const deflate = promisify(zlib.deflate);
+const inflate = promisify(zlib.inflate);
 
 const submissionSchema = new mongoose.Schema(
   {
@@ -20,7 +26,7 @@ const submissionSchema = new mongoose.Schema(
       enum: ['cpp', 'python', 'java', 'javascript'],
     },
     code: {
-      type: String,
+      type: Buffer,
       required: true,
     },
     verdict: {
@@ -30,23 +36,50 @@ const submissionSchema = new mongoose.Schema(
     },
     runtime: {
       type: Number,
-      default: null,
     },
     memory: {
       type: Number,
-      default: null,
     },
     aiReport: {
       type: String,
-      default: null,
     },
     submittedAt: {
       type: Date,
       default: Date.now,
-      expires: 90 * 24 * 60 * 60,
+      expires: '90d',
     },
   },
   { timestamps: true },
 );
+
+/* Pre-save hook to compress the code before saving to the database */
+submissionSchema.pre('save', async function (next) {
+  if (this.isModified('code')) {
+    const raw = Buffer.isBuffer(this.code) ? this.code : Buffer.from(this.code, 'utf8');
+    this.code = await deflate(raw);
+  }
+  next();
+});
+
+/* Middleware for findOneAndUpdate to compress code */
+submissionSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+  const rawCode = update.code ?? update.$set?.code;
+  if (rawCode !== undefined && !Buffer.isBuffer(rawCode)) {
+    const compressed = await deflate(Buffer.from(rawCode, 'utf8'));
+    if (update.$set) {
+      update.$set.code = compressed;
+    } else {
+      update.code = compressed;
+    }
+  }
+  next();
+});
+
+/* Method to get the decoded code */
+submissionSchema.methods.getDecodedCode = async function () {
+  const buf = await inflate(this.code);
+  return buf.toString('utf8');
+};
 
 export const Submission = mongoose.model('Submission', submissionSchema);
