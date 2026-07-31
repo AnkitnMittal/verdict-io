@@ -78,17 +78,7 @@ export const getProblemById = asyncHandler(async (req, res) => {
  * @access  Private (Admin)
  */
 export const createProblem = asyncHandler(async (req, res) => {
-  const {
-    problemId,
-    title,
-    statement,
-    difficulty,
-    topics,
-    timeLimit,
-    memoryLimit,
-    skeletonCode,
-    testCases,
-  } = req.body;
+  const { problemId, title, statement, difficulty, topics, timeLimit, memoryLimit, skeletonCode, testCases } = req.body;
 
   if (!problemId || !title || !statement || !difficulty) {
     throw new ApiError(400, 'Missing required fields');
@@ -118,7 +108,5 @@ export const createProblem = asyncHandler(async (req, res) => {
     await TestCase.insertMany(testCaseDocs);
   }
 
-  return res
-    .status(201)
-    .json(new ApiResponse(201, problem, 'Problem and test cases created successfully'));
+  return res.status(201).json(new ApiResponse(201, problem, 'Problem and test cases created successfully'));
 });
