@@ -3,5 +3,6 @@ export default {
   filename: 'Main.java',
   timeoutMs: 5000,
   memoryLimitMB: 512,
-  runCommand: 'javac Main.java && java Main',
+  compileCommand: 'javac Main.java',
+  runCommand: 'java Main',
 };

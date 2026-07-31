@@ -3,5 +3,6 @@ export default {
   filename: 'solution.cpp',
   timeoutMs: 2000,
   memoryLimitMB: 256,
-  runCommand: 'g++ -O2 solution.cpp -o a.out && ./a.out',
+  compileCommand: 'g++ -O2 solution.cpp -std=c++20 -o a.out',
+  runCommand: './a.out',
 };

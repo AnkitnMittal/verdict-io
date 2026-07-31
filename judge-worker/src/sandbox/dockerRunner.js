@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 
+import { ApiError } from '../utils/errors.js';
 const execPromise = promisify(exec);
 
 /**
@@ -13,5 +14,9 @@ const execPromise = promisify(exec);
  * @param {string} input - The input to be provided to the code during execution.
  */
 export const executeDockerSandbox = async (langConfig, code, input) => {
-  const { image, filename, timeoutMs, memoryLimitMB, runCommand } = langConfig;
+  if (!langConfig || !code || !input) {
+    throw new ApiError(400, 'Invalid language configuration, code, or input provided.');
+  }
+
+  const { image, filename, timeoutMs, memoryLimitMB, compileCommand, runCommand } = langConfig;
 };
