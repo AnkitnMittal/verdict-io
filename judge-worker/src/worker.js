@@ -9,6 +9,7 @@ import { ApiError } from './utils/ApiError.js';
 import { Submission } from './models/Submission.js';
 import { TestCase } from './models/TestCase.js';
 
+import { languageConfigs } from './languages/index.js';
 import { executeDockerSandbox } from './sandbox/dockerRunner.js';
 import { evaluateOutput } from './judge/evaluator.js';
 
@@ -39,8 +40,15 @@ const worker = new Worker(
       let maxMemory = 0;
       let failingDiagnostics = '';
 
-      for (const testCase of testCases) {
-        const result = await executeDockerSandbox(language, code, testCase.input);
+      for (let i = 0; i < testCases.length; i++) {
+        const testCase = testCases[i];
+
+        const langConfig = languageConfigs[language];
+        if (!langConfig) {
+          throw new ApiError(400, `Unsupported language: ${language}`);
+        }
+
+        const result = await executeDockerSandbox(langConfig, code, testCase.input);
 
         if (result.runtime > maxRuntime) maxRuntime = result.runtime;
         if (result.memory > maxMemory) maxMemory = result.memory;
