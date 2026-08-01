@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # Database & Cache Layer
+  mongodb:
+    image: mongo:8
+    container_name: verdictio-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: verdictio-redis
+    ports:
+      - '6379:6379'
+    restart: unless-stopped
+
+  # Application Layer (Backend)
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: verdictio-server
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./server/.env
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - redis
+    restart: unless-stopped
+
+  # Execution Layer (Judge Worker)
+  judge-worker:
+    build:
+      context: ./judge-worker
+      dockerfile: Dockerfile
+    container_name: verdictio-worker
+    env_file:
+      - ./judge-worker/.env
+    volumes:
+      - ./judge-worker:/app
+      - /app/node_modules
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    depends_on:
+      - mongodb
+      - redis
+      - server
+    restart: unless-stopped
+
+  # Client Layer (Frontend SPA)
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: verdictio-client
+    ports:
+      - '5173:5173'
+    env_file:
+      - ./client/.env
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - server
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
