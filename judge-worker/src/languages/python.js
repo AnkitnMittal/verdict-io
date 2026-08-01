@@ -1,5 +1,5 @@
 export default {
-  image: 'python:3.11-slim',
+  image: 'verdictio/sandbox-python',
   filename: 'solution.py',
   timeoutMs: 5000,
   memoryLimitMB: 256,

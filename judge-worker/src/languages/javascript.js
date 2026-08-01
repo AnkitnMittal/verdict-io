@@ -1,5 +1,5 @@
 export default {
-  image: 'node:20-alpine',
+  image: 'verdictio/sandbox-js',
   filename: 'solution.js',
   timeoutMs: 5000,
   memoryLimitMB: 256,

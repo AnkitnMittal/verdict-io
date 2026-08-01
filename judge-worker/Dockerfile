@@ -1,6 +1,6 @@
 FROM node:20-alpine
 
-RUN apk add --no-cache docker-cli
+RUN apk add --no-cache docker-cli bash coreutils
 
 WORKDIR /app
 COPY package*.json ./

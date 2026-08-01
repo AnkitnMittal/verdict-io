@@ -1,5 +1,5 @@
 export default {
-  image: 'gcc:13-alpine',
+  image: 'verdictio/sandbox-cpp',
   filename: 'solution.cpp',
   timeoutMs: 2000,
   memoryLimitMB: 256,
