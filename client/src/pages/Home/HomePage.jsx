@@ -7,15 +7,12 @@ export const HomePage = () => {
         Master Algorithms with <span className='text-blue-500'>VerdictIO</span>
       </h1>
       <p className='text-lg text-slate-400 max-w-2xl mb-10'>
-        The ultimate sandboxed code execution engine. Solve complex programming challenges, get
-        real-time evaluations, and leverage AI coaching to elevate your skills.
+        The ultimate sandboxed code execution engine. Solve complex programming challenges, get real-time evaluations, and leverage AI coaching to elevate your
+        skills.
       </p>
 
       <div className='flex gap-4'>
-        <Link
-          to='/problems'
-          className='bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-8 rounded-md transition-colors text-lg'
-        >
+        <Link to='/problems' className='bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-8 rounded-md transition-colors text-lg'>
           Start Coding
         </Link>
       </div>

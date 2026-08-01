@@ -18,10 +18,7 @@ export const Navbar = () => {
               <Link to='/problems' className='text-slate-400 hover:text-slate-50 transition-colors'>
                 Problems
               </Link>
-              <Link
-                to='/leaderboard'
-                className='text-slate-400 hover:text-slate-50 transition-colors'
-              >
+              <Link to='/leaderboard' className='text-slate-400 hover:text-slate-50 transition-colors'>
                 Leaderboard
               </Link>
             </div>
@@ -39,25 +36,16 @@ export const Navbar = () => {
               <span className='text-sm text-slate-400 hidden sm:block'>
                 Welcome, <span className='text-slate-50 font-medium'>{user?.fullName}</span>
               </span>
-              <button
-                onClick={logout}
-                className='text-sm text-slate-400 hover:text-red-500 transition-colors px-3 py-2'
-              >
+              <button onClick={logout} className='text-sm text-slate-400 hover:text-red-500 transition-colors px-3 py-2'>
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link
-                to='/login'
-                className='text-sm text-slate-400 hover:text-slate-50 transition-colors font-medium'
-              >
+              <Link to='/login' className='text-sm text-slate-400 hover:text-slate-50 transition-colors font-medium'>
                 Log in
               </Link>
-              <Link
-                to='/register'
-                className='text-sm bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-medium transition-colors'
-              >
+              <Link to='/register' className='text-sm bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-medium transition-colors'>
                 Sign up
               </Link>
             </>

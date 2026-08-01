@@ -35,11 +35,7 @@ export const RegisterForm = () => {
   return (
     <form onSubmit={handleSubmit} className='space-y-6'>
       {/* Error message display */}
-      {error && (
-        <div className='p-3 bg-red-500/10 border border-red-500 rounded text-red-500 text-sm'>
-          {error}
-        </div>
-      )}
+      {error && <div className='p-3 bg-red-500/10 border border-red-500 rounded text-red-500 text-sm'>{error}</div>}
 
       {/* Full Name input field */}
       <div>
@@ -80,10 +76,7 @@ export const RegisterForm = () => {
       </div>
 
       {/* Submit button */}
-      <button
-        type='submit'
-        className='w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 rounded-md transition-colors'
-      >
+      <button type='submit' className='w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 rounded-md transition-colors'>
         Sign Up
       </button>
     </form>

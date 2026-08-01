@@ -21,11 +21,7 @@ export const MonacoEditorWrapper = ({ language, code, onChange }) => {
           smoothScrolling: true,
           cursorBlinking: 'smooth',
         }}
-        loading={
-          <div className='flex items-center justify-center h-full text-slate-400 text-sm'>
-            Loading Editor Environment...
-          </div>
-        }
+        loading={<div className='flex items-center justify-center h-full text-slate-400 text-sm'>Loading Editor Environment...</div>}
       />
     </div>
   );

@@ -19,10 +19,7 @@ export const CodingArenaPage = () => {
     <div className='p-6 text-slate-200'>
       <h1 className='text-2xl font-bold text-slate-50 mb-4'>Problem {id}</h1>
       <div className='prose prose-invert max-w-none font-sans'>
-        <p className='text-slate-400'>
-          The problem statement, constraints, and public examples will be rendered here via
-          Markdown.
-        </p>
+        <p className='text-slate-400'>The problem statement, constraints, and public examples will be rendered here via Markdown.</p>
       </div>
     </div>
   );
@@ -40,11 +37,5 @@ export const CodingArenaPage = () => {
   /* Right Panel Content (Console) */
   const RightPanelBottom = <ConsoleOutput problemId={id} language={language} code={code} />;
 
-  return (
-    <SplitPanels
-      leftPanel={LeftPanel}
-      rightPanelTop={RightPanelTop}
-      rightPanelBottom={RightPanelBottom}
-    />
-  );
+  return <SplitPanels leftPanel={LeftPanel} rightPanelTop={RightPanelTop} rightPanelBottom={RightPanelBottom} />;
 };

@@ -118,26 +118,18 @@ export const ProblemForm = () => {
         <div
           className={`p-4 rounded-md flex items-center gap-3 ${status.type === 'error' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'}`}
         >
-          {status.type === 'error' ? (
-            <AlertCircle className='w-5 h-5' />
-          ) : (
-            <CheckCircle2 className='w-5 h-5' />
-          )}
+          {status.type === 'error' ? <AlertCircle className='w-5 h-5' /> : <CheckCircle2 className='w-5 h-5' />}
           <span>{status.message}</span>
         </div>
       )}
 
       {/* Basic Information */}
       <div className='space-y-4 bg-slate-800/50 p-6 rounded-lg border border-slate-700'>
-        <h3 className='text-lg font-medium text-slate-50 border-b border-slate-700 pb-2'>
-          Basic Information
-        </h3>
+        <h3 className='text-lg font-medium text-slate-50 border-b border-slate-700 pb-2'>Basic Information</h3>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>
-              Problem ID (Slug)
-            </label>
+            <label className='block text-sm font-medium text-slate-400 mb-1'>Problem ID (Slug)</label>
             <input
               required
               type='text'
@@ -174,9 +166,7 @@ export const ProblemForm = () => {
             </select>
           </div>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>
-              Topics (comma separated)
-            </label>
+            <label className='block text-sm font-medium text-slate-400 mb-1'>Topics (comma separated)</label>
             <input
               type='text'
               name='topics'
@@ -189,9 +179,7 @@ export const ProblemForm = () => {
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-slate-400 mb-1'>
-            Problem Statement (Markdown)
-          </label>
+          <label className='block text-sm font-medium text-slate-400 mb-1'>Problem Statement (Markdown)</label>
           <textarea
             required
             name='statement'
@@ -206,14 +194,10 @@ export const ProblemForm = () => {
 
       {/* Constraints */}
       <div className='space-y-4 bg-slate-800/50 p-6 rounded-lg border border-slate-700'>
-        <h3 className='text-lg font-medium text-slate-50 border-b border-slate-700 pb-2'>
-          Execution Constraints
-        </h3>
+        <h3 className='text-lg font-medium text-slate-50 border-b border-slate-700 pb-2'>Execution Constraints</h3>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>
-              Time Limit (Seconds)
-            </label>
+            <label className='block text-sm font-medium text-slate-400 mb-1'>Time Limit (Seconds)</label>
             <input
               required
               type='number'
@@ -225,9 +209,7 @@ export const ProblemForm = () => {
             />
           </div>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>
-              Memory Limit (MB)
-            </label>
+            <label className='block text-sm font-medium text-slate-400 mb-1'>Memory Limit (MB)</label>
             <input
               required
               type='number'
@@ -246,9 +228,7 @@ export const ProblemForm = () => {
           <h3 className='text-lg font-medium text-slate-50'>Test Cases</h3>
           <button
             type='button'
-            onClick={() =>
-              addArrayItem('testCases', { input: '', expectedOutput: '', isHidden: true })
-            }
+            onClick={() => addArrayItem('testCases', { input: '', expectedOutput: '', isHidden: true })}
             className='text-sm flex items-center gap-1 text-blue-500 hover:text-blue-400'
           >
             <Plus className='w-4 h-4' /> Add Test Case
@@ -256,10 +236,7 @@ export const ProblemForm = () => {
         </div>
 
         {formData.testCases.map((tc, index) => (
-          <div
-            key={index}
-            className='flex gap-4 items-start p-4 bg-slate-900 border border-slate-700 rounded-md relative'
-          >
+          <div key={index} className='flex gap-4 items-start p-4 bg-slate-900 border border-slate-700 rounded-md relative'>
             <div className='flex-1 space-y-3'>
               <div className='grid grid-cols-2 gap-4'>
                 <div>
@@ -277,9 +254,7 @@ export const ProblemForm = () => {
                   <textarea
                     required
                     value={tc.expectedOutput}
-                    onChange={(e) =>
-                      handleArrayChange(index, 'expectedOutput', e.target.value, 'testCases')
-                    }
+                    onChange={(e) => handleArrayChange(index, 'expectedOutput', e.target.value, 'testCases')}
                     rows='2'
                     className='w-full bg-slate-800 border border-slate-600 rounded px-3 py-1 text-sm font-mono focus:border-blue-500 outline-none'
                   />
@@ -289,20 +264,14 @@ export const ProblemForm = () => {
                 <input
                   type='checkbox'
                   checked={tc.isHidden}
-                  onChange={(e) =>
-                    handleArrayChange(index, 'isHidden', e.target.checked, 'testCases')
-                  }
+                  onChange={(e) => handleArrayChange(index, 'isHidden', e.target.checked, 'testCases')}
                   className='rounded bg-slate-800 border-slate-600 text-blue-500 focus:ring-blue-500 focus:ring-offset-slate-900'
                 />
                 Hidden Test Case (Used for evaluation, hidden from user)
               </label>
             </div>
             {formData.testCases.length > 1 && (
-              <button
-                type='button'
-                onClick={() => removeArrayItem(index, 'testCases')}
-                className='text-red-500 hover:text-red-400 p-1'
-              >
+              <button type='button' onClick={() => removeArrayItem(index, 'testCases')} className='text-red-500 hover:text-red-400 p-1'>
                 <Trash2 className='w-5 h-5' />
               </button>
             )}
@@ -324,16 +293,11 @@ export const ProblemForm = () => {
         </div>
 
         {formData.skeletonCode.map((sc, index) => (
-          <div
-            key={index}
-            className='flex gap-4 items-start p-4 bg-slate-900 border border-slate-700 rounded-md'
-          >
+          <div key={index} className='flex gap-4 items-start p-4 bg-slate-900 border border-slate-700 rounded-md'>
             <div className='flex-1 space-y-3'>
               <select
                 value={sc.language}
-                onChange={(e) =>
-                  handleArrayChange(index, 'language', e.target.value, 'skeletonCode')
-                }
+                onChange={(e) => handleArrayChange(index, 'language', e.target.value, 'skeletonCode')}
                 className='bg-slate-800 border border-slate-600 rounded px-3 py-1 text-sm focus:border-blue-500 outline-none text-slate-200'
               >
                 <option value='cpp'>C++</option>
@@ -351,11 +315,7 @@ export const ProblemForm = () => {
               />
             </div>
             {formData.skeletonCode.length > 1 && (
-              <button
-                type='button'
-                onClick={() => removeArrayItem(index, 'skeletonCode')}
-                className='text-red-500 hover:text-red-400 p-1'
-              >
+              <button type='button' onClick={() => removeArrayItem(index, 'skeletonCode')} className='text-red-500 hover:text-red-400 p-1'>
                 <Trash2 className='w-5 h-5' />
               </button>
             )}
@@ -369,11 +329,7 @@ export const ProblemForm = () => {
           disabled={isLoading}
           className='bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-md font-medium flex items-center gap-2 transition-colors'
         >
-          {isLoading ? (
-            <div className='w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-          ) : (
-            <Save className='w-5 h-5' />
-          )}
+          {isLoading ? <div className='w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin' /> : <Save className='w-5 h-5' />}
           {isLoading ? 'Saving...' : 'Save Problem'}
         </button>
       </div>

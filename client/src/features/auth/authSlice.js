@@ -5,17 +5,14 @@ import { authApi } from './api/authApi';
  * Fetches the current authenticated user from the API.
  * If successful, returns the user data; otherwise, returns an error message.
  */
-export const fetchCurrentUser = createAsyncThunk(
-  'auth/fetchCurrentUser',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await authApi.getCurrentUser();
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch user');
-    }
-  },
-);
+export const fetchCurrentUser = createAsyncThunk('auth/fetchCurrentUser', async (_, { rejectWithValue }) => {
+  try {
+    const response = await authApi.getCurrentUser();
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.response?.data?.message || 'Failed to fetch user');
+  }
+});
 
 /* Set initial state */
 const initialState = {

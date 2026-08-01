@@ -37,11 +37,7 @@ export const createSubmission = asyncHandler(async (req, res) => {
     code,
   });
 
-  return res
-    .status(201)
-    .json(
-      new ApiResponse(201, { submissionId: submission._id }, 'Submission created successfully'),
-    );
+  return res.status(201).json(new ApiResponse(201, { submissionId: submission._id }, 'Submission created successfully'));
 });
 
 /**

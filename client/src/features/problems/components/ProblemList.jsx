@@ -15,11 +15,7 @@ export const ProblemList = ({ problems, isLoading, error }) => {
   }
 
   if (!problems || problems.length === 0) {
-    return (
-      <div className='text-slate-400 text-center py-8'>
-        No problems found matching your criteria.
-      </div>
-    );
+    return <div className='text-slate-400 text-center py-8'>No problems found matching your criteria.</div>;
   }
 
   return (
@@ -38,10 +34,7 @@ export const ProblemList = ({ problems, isLoading, error }) => {
           {problems.map((problem) => (
             <tr key={problem._id} className='hover:bg-slate-700/50 transition-colors group'>
               <td className='p-4'>
-                <Link
-                  to={`/problems/${problem.problemId}`}
-                  className='text-slate-200 font-medium group-hover:text-blue-400 transition-colors'
-                >
+                <Link to={`/problems/${problem.problemId}`} className='text-slate-200 font-medium group-hover:text-blue-400 transition-colors'>
                   {problem.title}
                 </Link>
               </td>
@@ -51,25 +44,15 @@ export const ProblemList = ({ problems, isLoading, error }) => {
               <td className='p-4 hidden md:table-cell'>
                 <div className='flex gap-2 flex-wrap'>
                   {(problem.topics ?? []).slice(0, 3).map((topic) => (
-                    <span
-                      key={topic}
-                      className='text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded'
-                    >
+                    <span key={topic} className='text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded'>
                       {topic}
                     </span>
                   ))}
-                  {problem.topics?.length > 3 && (
-                    <span className='text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded'>
-                      +{problem.topics.length - 3}
-                    </span>
-                  )}
+                  {problem.topics?.length > 3 && <span className='text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded'>+{problem.topics.length - 3}</span>}
                 </div>
               </td>
               <td className='p-4 text-right'>
-                <Link
-                  to={`/problems/${problem.problemId}`}
-                  className='text-blue-500 hover:text-blue-400 text-sm font-medium'
-                >
+                <Link to={`/problems/${problem.problemId}`} className='text-blue-500 hover:text-blue-400 text-sm font-medium'>
                   Solve
                 </Link>
               </td>

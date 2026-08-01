@@ -6,9 +6,7 @@ import { problemsApi } from '../api/problemsApi';
  * @param {Object} filters - Optional filters for fetching problems.
  */
 export const useProblems = (filters = {}) => {
-  const [data, setData] = useState([
-    { problems: [], totalPages: 1, currentPage: 1, totalProblems: 0 },
-  ]);
+  const [data, setData] = useState([{ problems: [], totalPages: 1, currentPage: 1, totalProblems: 0 }]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

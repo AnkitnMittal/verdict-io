@@ -8,9 +8,5 @@ export const DifficultyBadge = ({ difficulty }) => {
 
   const badgeStyles = colorMap[difficulty] || colorMap.Medium;
 
-  return (
-    <span className={`px-2.5 py-1 text-xs font-medium border rounded-full ${badgeStyles}`}>
-      {difficulty}
-    </span>
-  );
+  return <span className={`px-2.5 py-1 text-xs font-medium border rounded-full ${badgeStyles}`}>{difficulty}</span>;
 };

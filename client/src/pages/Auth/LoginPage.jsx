@@ -8,9 +8,7 @@ export const LoginPage = () => {
         {/* Page Title */}
         <div className='mb-8 text-center'>
           <h2 className='text-2xl font-bold text-slate-50'>Welcome back</h2>
-          <p className='text-slate-400 mt-2 text-sm'>
-            Enter your credentials to access your account
-          </p>
+          <p className='text-slate-400 mt-2 text-sm'>Enter your credentials to access your account</p>
         </div>
 
         {/* Login Form */}

@@ -45,12 +45,7 @@ export const ConsoleOutput = ({ problemId, language, code }) => {
             onClick={handleSubmit}
             className='flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded transition-colors disabled:opacity-50'
           >
-            {isSubmitting ? (
-              <Loader2 className='w-4 h-4 animate-spin' />
-            ) : (
-              <Send className='w-4 h-4' />
-            )}{' '}
-            Submit
+            {isSubmitting ? <Loader2 className='w-4 h-4 animate-spin' /> : <Send className='w-4 h-4' />} Submit
           </button>
         </div>
       </div>
@@ -60,8 +55,7 @@ export const ConsoleOutput = ({ problemId, language, code }) => {
         {activeTab === 'results' && verdictData ? (
           <div className='space-y-2 p-4 bg-slate-800/50 border border-slate-700 rounded-md'>
             <div className='text-slate-300'>
-              Verdict:{' '}
-              <span className={getVerdictColor(verdictData.verdict)}>{verdictData.verdict}</span>
+              Verdict: <span className={getVerdictColor(verdictData.verdict)}>{verdictData.verdict}</span>
             </div>
 
             {verdictData.runtime && (
