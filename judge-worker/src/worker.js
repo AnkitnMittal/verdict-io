@@ -64,7 +64,11 @@ const worker = new Worker(
 
         if (evaluationVerdict !== 'AC') {
           finalVerdict = 'WA';
-          failingDiagnostics = `Failed on Test Case ${i + 1}\nExpected:\n{testCase.expectedOutput}\nGot:\n${result.stdout}`;
+          if (testCase.isHidden) {
+            failingDiagnostics = `Failed on Hidden Test Case ${i + 1}. Review your algorithm's edge cases.`;
+          } else {
+            failingDiagnostics = `Failed on Public Test Case ${i + 1}\nInput:\n${testCase.input}\nExpected:\n${testCase.expectedOutput}\nGot:\n${result.stdout}`;
+          }
           break;
         }
       }
