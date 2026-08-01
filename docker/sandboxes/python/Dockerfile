@@ -7,5 +7,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
 WORKDIR /sandbox
+USER runner
 
 CMD ["/bin/bash"]
