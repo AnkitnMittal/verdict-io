@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 
-import { ApiError } from '../utils/errors.js';
+import { ApiError } from '../utils/ApiError.js';
 
 /* Helper function to get base Docker arguments */
 const getBaseDockerArgs = (langConfig, tempDir) => {
