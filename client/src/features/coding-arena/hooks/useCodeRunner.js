@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 /**
  * Custom hook to manage code and language state for a coding problem.
@@ -11,6 +11,18 @@ export const useCodeRunner = (problemId, initialLanguage = 'cpp', skeletonCode =
   const [code, setCode] = useState(() => {
     return localStorage.getItem(storageKey) || skeletonCode;
   });
+
+  const hasAppliedInitialCode = useRef(Boolean(skeletonCode));
+
+  useEffect(() => {
+    if (hasAppliedInitialCode.current || !skeletonCode) return;
+    hasAppliedInitialCode.current = true;
+
+    const draft = localStorage.getItem(storageKey);
+    if (!draft) {
+      setCode(skeletonCode);
+    }
+  }, [skeletonCode, storageKey]);
 
   /* Save code to localStorage when code or language changes */
   useEffect(() => {

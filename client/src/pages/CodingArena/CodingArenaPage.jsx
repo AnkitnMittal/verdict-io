@@ -14,7 +14,7 @@ import { AICoachPanel } from '../../features/ai-coach/components/AICoachPanel.js
 /* Expand this hook to fetch a single problem */
 import { useProblemDetail } from '../../features/problems/hooks/useProblemDetail.js';
 import { useCodeRunner } from '../../features/coding-arena/hooks/useCodeRunner';
-import { useSubmissionStatus } from '../../features/coding-arena/hooks/useSubmissionStatus';
+import { useSubmissionStatus } from '../../features/submissions/hooks/useSubmissionStatus.js';
 
 export const CodingArenaPage = () => {
   const { id } = useParams();
