@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { getProblems, getProblemById, createProblem } from '../controllers/problemsController.js';
 import { verifyJWT, authorizeRoles } from '../middlewares/authMiddleware.js';
+import { getProblems, getProblemById, createProblem } from '../controllers/problemsController.js';
 
 const router = Router();
 

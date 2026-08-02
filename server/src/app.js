@@ -8,6 +8,7 @@ import { logger } from './utils/logger.js';
 import authRoutes from './routes/authRoutes.js';
 import problemRoutes from './routes/problemRoutes.js';
 import submissionRoutes from './routes/submissionsRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/problems', problemRoutes);
 app.use('/api/submissions', submissionRoutes);
+app.use('/api/ai', aiRoutes);
 
 /* Health check Route to verify if the API is running */
 app.get('/health', (req, res) => {
