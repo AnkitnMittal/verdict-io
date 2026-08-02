@@ -36,12 +36,14 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isAuthenticated = true;
       state.isLoading = false;
+      state.isInitialized = true;
       state.error = null;
     },
     clearAuth: (state) => {
       state.user = null;
       state.isAuthenticated = false;
       state.isLoading = false;
+      state.isInitialized = true;
       state.error = null;
     },
     setAuthLoading: (state, action) => {
@@ -52,6 +54,7 @@ const authSlice = createSlice({
     builder
       .addCase(fetchCurrentUser.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.user = action.payload;

@@ -36,15 +36,15 @@ axiosInstance.interceptors.response.use(
 
       try {
         if (!refreshPromise) {
-          refreshPromise = axios.post(`${API_URL}/auth/refresh`, {}, { withCredentials: true });
+          refreshPromise = axios.post(`${API_URL}/auth/refresh`, {}, { withCredentials: true }).finally(() => {
+            refreshPromise = null;
+          });
         }
 
         await refreshPromise;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         return Promise.reject(refreshError);
-      } finally {
-        refreshPromise = null;
       }
     }
 

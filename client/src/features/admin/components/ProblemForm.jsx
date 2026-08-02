@@ -1,10 +1,17 @@
 import { useState } from 'react';
-import { Plus, Trash2, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Plus, Trash2, Save, AlertCircle, CheckCircle2, FileText, Upload, Code2 } from 'lucide-react';
 import { adminApi } from '../api/adminApi';
+
+import { AVAILABLE_LANGUAGES } from '../../../constants/languages';
 
 export const ProblemForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
+  const [activeLangTab, setActiveLangTab] = useState(AVAILABLE_LANGUAGES[0].id || 'cpp');
+
+  const [showBulkTestCases, setShowBulkTestCases] = useState(false);
+  const [bulkInput, setBulkInput] = useState('');
+  const [bulkError, setBulkError] = useState('');
 
   const [formData, setFormData] = useState({
     problemId: '',
@@ -14,73 +21,81 @@ export const ProblemForm = () => {
     topics: '',
     timeLimit: 2,
     memoryLimit: 256,
-    skeletonCode: [{ language: 'cpp', code: '' }],
+    skeletonCode: AVAILABLE_LANGUAGES.map((lang) => ({ language: lang.id, code: '' })),
     testCases: [{ input: '', expectedOutput: '', isHidden: true }],
   });
 
-  /**
-   * Handles changes to form inputs.
-   * @param {Object} e - The change event.
-   */
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'number' ? Number(value) : value,
     }));
   };
 
-  /**
-   * Handles changes to array fields in the form data.
-   * @param {number} index - The index of the item in the array.
-   * @param {string} field - The field name to update.
-   * @param {any} value - The new value for the field.
-   * @param {string} arrayName - The name of the array in formData.
-   */
-  const handleArrayChange = (index, field, value, arrayName) => {
-    const newArray = [...formData[arrayName]];
-    newArray[index][field] = value;
+  const handleTestCaseChange = (index, field, value) => {
+    const newTestCases = [...formData.testCases];
+    newTestCases[index][field] = value;
+    setFormData((prev) => ({ ...prev, testCases: newTestCases }));
+  };
+
+  const addTestCase = () => {
     setFormData((prev) => ({
       ...prev,
-      [arrayName]: newArray,
+      testCases: [...prev.testCases, { input: '', expectedOutput: '', isHidden: true }],
     }));
   };
 
-  /**
-   * Adds a new item to an array field in the form data.
-   * @param {string} arrayName - The name of the array in formData.
-   * @param {Object} defaultItem - The default item to add to the array.
-   */
-  const addArrayItem = (arrayName, defaultItem) => {
+  const removeTestCase = (index) => {
+    if (formData.testCases.length <= 1) return;
     setFormData((prev) => ({
       ...prev,
-      [arrayName]: [...prev[arrayName], defaultItem],
+      testCases: prev.testCases.filter((_, i) => i !== index),
     }));
   };
 
-  /**
-   * Removes an item from an array field in the form data.
-   * @param {number} index - The index of the item to remove.
-   * @param {string} arrayName - The name of the array in formData.
-   */
-  const removeArrayItem = (index, arrayName) => {
-    if (formData[arrayName].length < 1) return;
-    const newArray = formData[arrayName].filter((_, i) => i !== index);
-    setFormData((prev) => ({
-      ...prev,
-      [arrayName]: newArray,
-    }));
+  const handleBulkTestCaseImport = () => {
+    try {
+      setBulkError('');
+      const parsed = JSON.parse(bulkInput);
+      if (!Array.isArray(parsed)) {
+        throw new Error('JSON must be an array of objects.');
+      }
+
+      const formatted = parsed.map((tc) => ({
+        input: typeof tc.input === 'object' ? JSON.stringify(tc.input) : String(tc.input ?? ''),
+        expectedOutput: typeof tc.expectedOutput === 'object' ? JSON.stringify(tc.expectedOutput) : String(tc.expectedOutput ?? ''),
+        isHidden: tc.isHidden ?? true,
+      }));
+
+      setFormData((prev) => ({
+        ...prev,
+        testCases: [...prev.testCases, ...formatted],
+      }));
+      setBulkInput('');
+      setShowBulkTestCases(false);
+    } catch (err) {
+      setBulkError(err.message || 'Invalid JSON format. Expected: [{"input": "...", "expectedOutput": "...", "isHidden": true}]');
+    }
   };
 
-  /* Handles form submission to create a new problem */
+  const handleSkeletonCodeChange = (lang, code) => {
+    const updated = formData.skeletonCode.map((item) => (item.language === lang ? { ...item, code } : item));
+    setFormData((prev) => ({ ...prev, skeletonCode: updated }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setStatus({ type: '', message: '' });
 
     try {
+      const activeSkeletonCode = formData.skeletonCode.filter((item) => item.code.trim() !== '');
+
       const payload = {
         ...formData,
+        skeletonCode: activeSkeletonCode,
         topics: formData.topics
           .split(',')
           .map((topic) => topic.trim())
@@ -98,7 +113,7 @@ export const ProblemForm = () => {
         topics: '',
         timeLimit: 2,
         memoryLimit: 256,
-        skeletonCode: [{ language: 'cpp', code: '' }],
+        skeletonCode: AVAILABLE_LANGUAGES.map((lang) => ({ language: lang.id, code: '' })),
         testCases: [{ input: '', expectedOutput: '', isHidden: true }],
       });
     } catch (error) {
@@ -111,54 +126,60 @@ export const ProblemForm = () => {
     }
   };
 
+  const activeSkeleton = formData.skeletonCode.find((s) => s.language === activeLangTab) || { code: '' };
+
   return (
-    <form onSubmit={handleSubmit} className='space-y-8 text-slate-200'>
-      {/* Status Messages */}
+    <form onSubmit={handleSubmit} className='max-w-5xl mx-auto space-y-8 text-slate-200 pb-20'>
+      {/* Status Alert */}
       {status.message && (
         <div
-          className={`p-4 rounded-md flex items-center gap-3 ${status.type === 'error' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'}`}
+          className={`p-4 rounded-lg flex items-center gap-3 border ${
+            status.type === 'error' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+          }`}
         >
-          {status.type === 'error' ? <AlertCircle className='w-5 h-5' /> : <CheckCircle2 className='w-5 h-5' />}
-          <span>{status.message}</span>
+          {status.type === 'error' ? <AlertCircle className='w-5 h-5 shrink-0' /> : <CheckCircle2 className='w-5 h-5 shrink-0' />}
+          <span className='text-sm font-medium'>{status.message}</span>
         </div>
       )}
 
-      {/* Basic Information */}
-      <div className='space-y-4 bg-slate-800/50 p-6 rounded-lg border border-slate-700'>
-        <h3 className='text-lg font-medium text-slate-50 border-b border-slate-700 pb-2'>Basic Information</h3>
+      {/* Section 1: Metadata */}
+      <div className='bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6 shadow-sm'>
+        <h3 className='text-md font-semibold text-slate-100 flex items-center gap-2 border-b border-slate-800 pb-3'>
+          <FileText className='w-4 h-4 text-blue-400' /> General Information
+        </h3>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>Problem ID (Slug)</label>
-            <input
-              required
-              type='text'
-              name='problemId'
-              value={formData.problemId}
-              onChange={handleChange}
-              placeholder='two-sum'
-              className='w-full bg-slate-900 border border-slate-700 rounded-md px-4 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors'
-            />
-          </div>
-          <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>Title</label>
+            <label className='block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2'>Problem Title</label>
             <input
               required
               type='text'
               name='title'
               value={formData.title}
               onChange={handleChange}
-              placeholder='Two Sum'
-              className='w-full bg-slate-900 border border-slate-700 rounded-md px-4 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors'
+              placeholder='e.g., Two Sum'
+              className='w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all'
             />
           </div>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>Difficulty</label>
+            <label className='block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2'>Slug / ID</label>
+            <input
+              required
+              type='text'
+              name='problemId'
+              value={formData.problemId}
+              onChange={handleChange}
+              placeholder='e.g., two-sum'
+              className='w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all font-mono'
+            />
+          </div>
+          <div>
+            <label className='block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2'>Difficulty</label>
             <select
               name='difficulty'
               value={formData.difficulty}
               onChange={handleChange}
-              className='w-full bg-slate-900 border border-slate-700 rounded-md px-4 py-2 focus:border-blue-500 outline-none transition-colors'
+              className='w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-sm focus:border-blue-500 outline-none transition-all'
             >
               <option value='Easy'>Easy</option>
               <option value='Medium'>Medium</option>
@@ -166,38 +187,36 @@ export const ProblemForm = () => {
             </select>
           </div>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>Topics (comma separated)</label>
+            <label className='block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2'>Topics (Comma Separated)</label>
             <input
               type='text'
               name='topics'
               value={formData.topics}
               onChange={handleChange}
-              placeholder='Arrays, Hash Table'
-              className='w-full bg-slate-900 border border-slate-700 rounded-md px-4 py-2 focus:border-blue-500 outline-none transition-colors'
+              placeholder='Arrays, Hash Table, Two Pointers'
+              className='w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2.5 text-sm focus:border-blue-500 outline-none transition-all'
             />
           </div>
         </div>
 
+        {/* Expanded Problem Statement Area */}
         <div>
-          <label className='block text-sm font-medium text-slate-400 mb-1'>Problem Statement (Markdown)</label>
+          <label className='block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2'>Problem Statement (Markdown Supported)</label>
           <textarea
             required
             name='statement'
             value={formData.statement}
             onChange={handleChange}
-            rows='6'
-            className='w-full bg-slate-900 border border-slate-700 rounded-md px-4 py-2 focus:border-blue-500 outline-none transition-colors font-mono text-sm'
-            placeholder='Write problem description here...'
+            rows={12}
+            className='w-full min-h-62.5 bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-sm leading-relaxed focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all resize-y'
+            placeholder='Write detailed problem description, inputs, outputs, and constraints here...'
           />
         </div>
-      </div>
 
-      {/* Constraints */}
-      <div className='space-y-4 bg-slate-800/50 p-6 rounded-lg border border-slate-700'>
-        <h3 className='text-lg font-medium text-slate-50 border-b border-slate-700 pb-2'>Execution Constraints</h3>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        {/* Time and Memory Limits */}
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-5 pt-2 border-t border-slate-800/60'>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>Time Limit (Seconds)</label>
+            <label className='block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2'>Time Limit (Seconds)</label>
             <input
               required
               type='number'
@@ -205,133 +224,180 @@ export const ProblemForm = () => {
               name='timeLimit'
               value={formData.timeLimit}
               onChange={handleChange}
-              className='w-full bg-slate-900 border border-slate-700 rounded-md px-4 py-2 focus:border-blue-500 outline-none'
+              className='w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm focus:border-blue-500 outline-none'
             />
           </div>
           <div>
-            <label className='block text-sm font-medium text-slate-400 mb-1'>Memory Limit (MB)</label>
+            <label className='block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2'>Memory Limit (MB)</label>
             <input
               required
               type='number'
               name='memoryLimit'
               value={formData.memoryLimit}
               onChange={handleChange}
-              className='w-full bg-slate-900 border border-slate-700 rounded-md px-4 py-2 focus:border-blue-500 outline-none'
+              className='w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm focus:border-blue-500 outline-none'
             />
           </div>
         </div>
       </div>
 
-      {/* Test Cases */}
-      <div className='space-y-4 bg-slate-800/50 p-6 rounded-lg border border-slate-700'>
-        <div className='flex justify-between items-center border-b border-slate-700 pb-2'>
-          <h3 className='text-lg font-medium text-slate-50'>Test Cases</h3>
-          <button
-            type='button'
-            onClick={() => addArrayItem('testCases', { input: '', expectedOutput: '', isHidden: true })}
-            className='text-sm flex items-center gap-1 text-blue-500 hover:text-blue-400'
-          >
-            <Plus className='w-4 h-4' /> Add Test Case
-          </button>
+      {/* Section 2: Tabbed Skeleton Code Editor */}
+      <div className='bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4 shadow-sm'>
+        <div className='flex items-center justify-between border-b border-slate-800 pb-3'>
+          <h3 className='text-md font-semibold text-slate-100 flex items-center gap-2'>
+            <Code2 className='w-4 h-4 text-blue-400' /> Starter Code Templates
+          </h3>
+          <span className='text-xs text-slate-500'>Switch tabs to supply default starter code for each language</span>
         </div>
 
-        {formData.testCases.map((tc, index) => (
-          <div key={index} className='flex gap-4 items-start p-4 bg-slate-900 border border-slate-700 rounded-md relative'>
-            <div className='flex-1 space-y-3'>
-              <div className='grid grid-cols-2 gap-4'>
+        {/* Tab Navigation */}
+        <div className='flex gap-2 border-b border-slate-800 pb-2'>
+          {AVAILABLE_LANGUAGES.map((lang) => {
+            const hasCode = formData.skeletonCode.find((s) => s.language === lang.id)?.code.trim().length > 0;
+            return (
+              <button
+                key={lang.id}
+                type='button'
+                onClick={() => setActiveLangTab(lang.id)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                  activeLangTab === lang.id ? 'bg-blue-600 text-white shadow' : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+                }`}
+              >
+                {lang.label}
+                {hasCode && <span className='w-1.5 h-1.5 rounded-full bg-emerald-400' />}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tab Content */}
+        <div className='space-y-2'>
+          <textarea
+            value={activeSkeleton.code}
+            onChange={(e) => handleSkeletonCodeChange(activeLangTab, e.target.value)}
+            rows={8}
+            placeholder={`// Add starter code template for ${AVAILABLE_LANGUAGES.find((l) => l.id === activeLangTab)?.label}...`}
+            className='w-full bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-sm leading-relaxed focus:border-blue-500 outline-none transition-all'
+          />
+        </div>
+      </div>
+
+      {/* Section 3: Test Cases */}
+      <div className='bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4 shadow-sm'>
+        <div className='flex items-center justify-between border-b border-slate-800 pb-3'>
+          <h3 className='text-md font-semibold text-slate-100'>Test Cases ({formData.testCases.length})</h3>
+          <div className='flex items-center gap-2'>
+            <button
+              type='button'
+              onClick={() => setShowBulkTestCases(!showBulkTestCases)}
+              className='text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors flex items-center gap-1.5 border border-slate-700'
+            >
+              <Upload className='w-3.5 h-3.5' /> Bulk Import
+            </button>
+            <button
+              type='button'
+              onClick={addTestCase}
+              className='text-xs font-medium px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 transition-colors flex items-center gap-1.5 border border-blue-500/30'
+            >
+              <Plus className='w-3.5 h-3.5' /> Add Row
+            </button>
+          </div>
+        </div>
+
+        {/* Bulk Import Drawer */}
+        {showBulkTestCases && (
+          <div className='bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 mb-4'>
+            <div className='flex justify-between items-center'>
+              <label className='text-xs font-semibold text-slate-400 uppercase tracking-wider'>Paste JSON Test Cases</label>
+              <span className='text-xs text-slate-500'>Format: [{"{input: '...', expectedOutput: '...', isHidden: true}"}]</span>
+            </div>
+            <textarea
+              value={bulkInput}
+              onChange={(e) => setBulkInput(e.target.value)}
+              rows={4}
+              placeholder='[{"input": "2 3", "expectedOutput": "5", "isHidden": false}]'
+              className='w-full bg-slate-900 border border-slate-800 rounded-lg p-3 font-mono text-xs focus:border-blue-500 outline-none'
+            />
+            {bulkError && <p className='text-xs text-red-400'>{bulkError}</p>}
+            <div className='flex justify-end gap-2'>
+              <button type='button' onClick={() => setShowBulkTestCases(false)} className='px-3 py-1.5 text-xs text-slate-400 hover:text-slate-200'>
+                Cancel
+              </button>
+              <button
+                type='button'
+                onClick={handleBulkTestCaseImport}
+                className='px-3 py-1.5 text-xs bg-blue-600 text-white rounded-md font-medium hover:bg-blue-500 transition-colors'
+              >
+                Import Test Cases
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Test Case List */}
+        <div className='space-y-4'>
+          {formData.testCases.map((tc, index) => (
+            <div key={index} className='p-4 bg-slate-950 border border-slate-800/80 rounded-xl space-y-3 relative group'>
+              <div className='flex justify-between items-center border-b border-slate-800/50 pb-2'>
+                <span className='text-xs font-semibold text-slate-400'>Test Case #{index + 1}</span>
+                {formData.testCases.length > 1 && (
+                  <button type='button' onClick={() => removeTestCase(index)} className='text-slate-500 hover:text-red-400 transition-colors p-1'>
+                    <Trash2 className='w-4 h-4' />
+                  </button>
+                )}
+              </div>
+
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div>
-                  <label className='block text-xs text-slate-400 mb-1'>Input</label>
+                  <label className='block text-xs text-slate-400 mb-1 font-mono'>Input</label>
                   <textarea
                     required
                     value={tc.input}
-                    onChange={(e) => handleArrayChange(index, 'input', e.target.value, 'testCases')}
-                    rows='2'
-                    className='w-full bg-slate-800 border border-slate-600 rounded px-3 py-1 text-sm font-mono focus:border-blue-500 outline-none'
+                    onChange={(e) => handleTestCaseChange(index, 'input', e.target.value)}
+                    rows={2}
+                    className='w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs font-mono focus:border-blue-500 outline-none'
                   />
                 </div>
                 <div>
-                  <label className='block text-xs text-slate-400 mb-1'>Expected Output</label>
+                  <label className='block text-xs text-slate-400 mb-1 font-mono'>Expected Output</label>
                   <textarea
                     required
                     value={tc.expectedOutput}
-                    onChange={(e) => handleArrayChange(index, 'expectedOutput', e.target.value, 'testCases')}
-                    rows='2'
-                    className='w-full bg-slate-800 border border-slate-600 rounded px-3 py-1 text-sm font-mono focus:border-blue-500 outline-none'
+                    onChange={(e) => handleTestCaseChange(index, 'expectedOutput', e.target.value)}
+                    rows={2}
+                    className='w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs font-mono focus:border-blue-500 outline-none'
                   />
                 </div>
               </div>
-              <label className='flex items-center gap-2 text-sm text-slate-400 cursor-pointer w-max'>
-                <input
-                  type='checkbox'
-                  checked={tc.isHidden}
-                  onChange={(e) => handleArrayChange(index, 'isHidden', e.target.checked, 'testCases')}
-                  className='rounded bg-slate-800 border-slate-600 text-blue-500 focus:ring-blue-500 focus:ring-offset-slate-900'
-                />
-                Hidden Test Case (Used for evaluation, hidden from user)
-              </label>
+
+              <div className='pt-1'>
+                <label className='inline-flex items-center gap-2 text-xs text-slate-400 cursor-pointer select-none'>
+                  <input
+                    type='checkbox'
+                    checked={tc.isHidden}
+                    onChange={(e) => handleTestCaseChange(index, 'isHidden', e.target.checked)}
+                    className='rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-0 focus:ring-offset-0'
+                  />
+                  Hidden test case (Used for final score, hidden from problem view)
+                </label>
+              </div>
             </div>
-            {formData.testCases.length > 1 && (
-              <button type='button' onClick={() => removeArrayItem(index, 'testCases')} className='text-red-500 hover:text-red-400 p-1'>
-                <Trash2 className='w-5 h-5' />
-              </button>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      {/* Skeleton Code */}
-      <div className='space-y-4 bg-slate-800/50 p-6 rounded-lg border border-slate-700'>
-        <div className='flex justify-between items-center border-b border-slate-700 pb-2'>
-          <h3 className='text-lg font-medium text-slate-50'>Skeleton Code</h3>
+      {/* Sticky Action Footer */}
+      <div className='fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 py-3 px-6 z-10'>
+        <div className='max-w-5xl mx-auto flex justify-end items-center gap-4'>
           <button
-            type='button'
-            onClick={() => addArrayItem('skeletonCode', { language: 'cpp', code: '' })}
-            className='text-sm flex items-center gap-1 text-blue-500 hover:text-blue-400'
+            type='submit'
+            disabled={isLoading}
+            className='bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white px-6 py-2.5 rounded-lg font-medium text-sm flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all'
           >
-            <Plus className='w-4 h-4' /> Add Language
+            {isLoading ? <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' /> : <Save className='w-4 h-4' />}
+            {isLoading ? 'Saving...' : 'Save Problem'}
           </button>
         </div>
-
-        {formData.skeletonCode.map((sc, index) => (
-          <div key={index} className='flex gap-4 items-start p-4 bg-slate-900 border border-slate-700 rounded-md'>
-            <div className='flex-1 space-y-3'>
-              <select
-                value={sc.language}
-                onChange={(e) => handleArrayChange(index, 'language', e.target.value, 'skeletonCode')}
-                className='bg-slate-800 border border-slate-600 rounded px-3 py-1 text-sm focus:border-blue-500 outline-none text-slate-200'
-              >
-                <option value='cpp'>C++</option>
-                <option value='python'>Python</option>
-                <option value='java'>Java</option>
-                <option value='javascript'>JavaScript</option>
-              </select>
-              <textarea
-                required
-                value={sc.code}
-                onChange={(e) => handleArrayChange(index, 'code', e.target.value, 'skeletonCode')}
-                rows='4'
-                placeholder='function twoSum(nums, target) { ... }'
-                className='w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-sm font-mono focus:border-blue-500 outline-none'
-              />
-            </div>
-            {formData.skeletonCode.length > 1 && (
-              <button type='button' onClick={() => removeArrayItem(index, 'skeletonCode')} className='text-red-500 hover:text-red-400 p-1'>
-                <Trash2 className='w-5 h-5' />
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className='flex justify-end pt-4'>
-        <button
-          type='submit'
-          disabled={isLoading}
-          className='bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-md font-medium flex items-center gap-2 transition-colors'
-        >
-          {isLoading ? <div className='w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin' /> : <Save className='w-5 h-5' />}
-          {isLoading ? 'Saving...' : 'Save Problem'}
-        </button>
       </div>
     </form>
   );
