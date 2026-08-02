@@ -23,10 +23,6 @@ export const Navbar = () => {
                   Problems
                 </Link>
 
-                <Link to='/leaderboard' className='text-slate-400 hover:text-slate-50 transition-colors'>
-                  Leaderboard
-                </Link>
-
                 {/* Dynamically shown option for Admin users */}
                 {isAdmin && (
                   <Link
@@ -44,14 +40,22 @@ export const Navbar = () => {
         {/* User Authentication Section */}
         <div className='flex items-center gap-4'>
           {isAuthenticated ? (
-            <>
-              <span className='text-sm text-slate-400 hidden sm:block'>
-                Welcome, <span className='text-slate-50 font-medium'>{user?.fullName}</span>
-              </span>
-              <button onClick={logout} className='text-sm text-slate-400 hover:text-red-500 transition-colors px-3 py-2'>
+            <div className='flex items-center gap-3'>
+              <div className='flex items-center gap-2.5 bg-slate-800 border border-slate-700 rounded-full py-1 pl-1 pr-4 shadow-sm'>
+                <div className='w-8 h-8 rounded-full bg-blue-600 text-white font-semibold text-sm flex items-center justify-center border border-blue-400'>
+                  {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
+                </div>
+
+                <span className='text-sm font-medium text-slate-100 hidden sm:block'>{user?.fullName}</span>
+              </div>
+
+              <button
+                onClick={logout}
+                className='text-sm text-slate-300 hover:text-red-400 hover:bg-slate-800 border border-transparent hover:border-red-500/30 px-3 py-1.5 rounded-lg transition-all font-medium'
+              >
                 Logout
               </button>
-            </>
+            </div>
           ) : (
             <>
               <Link to='/login' className='text-sm text-slate-400 hover:text-slate-50 transition-colors font-medium'>
