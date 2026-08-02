@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
  * It also handles saving and retrieving code drafts from localStorage.
  */
 export const useCodeRunner = (problemId, initialLanguage = 'cpp', skeletonCode = '') => {
-  const storageKey = `verdictio_draft_${problemId}_${initialLanguage}`;
-
   const [language, setLanguage] = useState(initialLanguage);
+  const storageKey = `verdictio_draft_${problemId}_${language}`;
+
   const [code, setCode] = useState(() => {
     return localStorage.getItem(storageKey) || skeletonCode;
   });

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import DOMPurify from 'dompurify';
@@ -8,17 +9,20 @@ import { SplitPanels } from '../../features/coding-arena/components/SplitPanels'
 import { LanguageSelector } from '../../features/coding-arena/components/LanguageSelector';
 import { MonacoEditorWrapper } from '../../features/coding-arena/components/MonacoEditorWrapper';
 import { ConsoleOutput } from '../../features/coding-arena/components/ConsoleOutput';
+import { AICoachPanel } from '../../features/ai-coach/components/AICoachPanel.jsx';
 
 /* Expand this hook to fetch a single problem */
 import { useProblemDetail } from '../../features/problems/hooks/useProblemDetail.js';
 import { useCodeRunner } from '../../features/coding-arena/hooks/useCodeRunner';
+import { useSubmissionStatus } from '../../features/coding-arena/hooks/useSubmissionStatus';
 
 export const CodingArenaPage = () => {
   const { id } = useParams();
+  const [showAiCoach, setShowAiCoach] = useState(false);
 
-  /* For now, we mock the problem statement */
   const { title, statement, difficulty, timeLimit, memoryLimit, getSkeletonCode, loading, error } = useProblemDetail(id);
   const { language, code, setCode, handleLanguageChange } = useCodeRunner(id, 'cpp', getSkeletonCode('cpp'));
+  const { isSubmitting, verdictData, submitCode } = useSubmissionStatus();
 
   if (loading) {
     return <div className='p-6 text-slate-200'>Loading problem details...</div>;
@@ -54,14 +58,24 @@ export const CodingArenaPage = () => {
 
   /* Right Panel Content (Editor) */
   const RightPanelTop = (
-    <div className='flex flex-col h-full'>
-      <LanguageSelector
-        language={language}
-        onLanguageChange={(newLanguage) => {
-          const newSkeleton = getSkeletonCode(newLanguage);
-          handleLanguageChange(newLanguage, newSkeleton);
-        }}
-      />
+    <div className='flex flex-col h-full bg-slate-900'>
+      <div className='flex items-center justify-between px-3 py-1 bg-slate-900 border-b border-slate-800'>
+        <LanguageSelector
+          language={language}
+          onLanguageChange={(newLanguage) => {
+            const newSkeleton = getSkeletonCode(newLanguage);
+            handleLanguageChange(newLanguage, newSkeleton);
+          }}
+        />
+        <button
+          onClick={() => setShowAiCoach(!showAiCoach)}
+          className={`px-2.5 py-1 text-xs rounded border transition-colors ${
+            showAiCoach ? 'bg-blue-600/20 text-blue-400 border-blue-500/40' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'
+          }`}
+        >
+          {showAiCoach ? 'Hide AI Coach' : 'Show AI Coach'}
+        </button>
+      </div>
       <div className='flex-1'>
         <MonacoEditorWrapper language={language} code={code} onChange={setCode} />
       </div>
@@ -69,7 +83,19 @@ export const CodingArenaPage = () => {
   );
 
   /* Right Panel Content (Console) */
-  const RightPanelBottom = <ConsoleOutput problemId={id} language={language} code={code} />;
+  const RightPanelBottom = <ConsoleOutput problemId={id} language={language} code={code} submissionStatus={{ isSubmitting, verdictData, submitCode }} />;
 
-  return <SplitPanels leftPanel={LeftPanel} rightPanelTop={RightPanelTop} rightPanelBottom={RightPanelBottom} />;
+  return (
+    <div className='flex h-[calc(100vh-4rem)] bg-slate-900 overflow-hidden'>
+      <div className='flex-1 h-full'>
+        <SplitPanels leftPanel={LeftPanel} rightPanelTop={RightPanelTop} rightPanelBottom={RightPanelBottom} />
+      </div>
+
+      {showAiCoach && (
+        <div className='w-80 h-full shrink-0'>
+          <AICoachPanel problemTitle={title} problemStatement={statement} userCode={code} language={language} latestSubmission={verdictData} />
+        </div>
+      )}
+    </div>
+  );
 };
