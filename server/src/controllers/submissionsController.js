@@ -64,7 +64,7 @@ export const getSubmission = asyncHandler(async (req, res) => {
         verdict: submission.verdict,
         runtime: submission.runtime,
         memory: submission.memory,
-        code: submission.getDecodedCode(),
+        code: await submission.getDecodedCode(),
         aiReport: submission.aiReport || '',
       },
       'Submission retrieved successfully',
