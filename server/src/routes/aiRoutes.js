@@ -7,6 +7,6 @@ const router = Router();
 router.use(verifyJWT);
 
 router.post('/hint', generateHintStream);
-router.post('/report', generateDebugReport);
+router.post('/debug', generateDebugReport);
 
 export default router;

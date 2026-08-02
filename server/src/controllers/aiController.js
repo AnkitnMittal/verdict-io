@@ -12,7 +12,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
  * @access Public
  */
 export const generateHintStream = asyncHandler(async (req, res) => {
-  const { problemTitle, problemStatement, userCode, hintLevel = 1 } = req.body;
+  const { problemTitle, problemStatement, userCode, language, hintLevel = 1 } = req.body;
 
   if (!problemStatement) {
     throw new ApiError(400, 'Problem statement is required for hint generation');
@@ -32,12 +32,12 @@ export const generateHintStream = asyncHandler(async (req, res) => {
 
   try {
     const responseStream = await ai.models.generateContentStream({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-3.6-flash',
       contents: [{ role: 'user', parts: [{ text: `${SYSTEM_PROMPTS.HINT_COACH}\n\n${userPrompt}` }] }],
     });
 
     for await (const chunk of responseStream) {
-      const text = chunk.text();
+      const text = chunk.text;
       if (text) {
         res.write(`data: ${JSON.stringify({ text })}\n\n`);
       }
@@ -75,7 +75,7 @@ export const generateDebugReport = asyncHandler(async (req, res) => {
   - Actual Output: ${actualOutput || 'N/A'}`;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-1.5-flash',
+    model: 'gemini-3.6-flash',
     contents: [{ role: 'user', parts: [{ text: `${SYSTEM_PROMPTS.DEBUG_ANALYST}\n\n${userPrompt}` }] }],
   });
 
