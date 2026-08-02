@@ -57,7 +57,7 @@ export const generateHintStream = asyncHandler(async (req, res) => {
  * @access Public
  */
 export const generateDebugReport = asyncHandler(async (req, res) => {
-  const { problemTitle, problemStatement, userCode, language, verdict, stderr, input, expectedOutput, actualOutput } = req.body;
+  const { problemTitle, problemStatement, userCode, language, verdict, stderr } = req.body;
 
   const userPrompt = `Problem: ${problemTitle}
   Verdict: ${verdict}
@@ -69,10 +69,7 @@ export const generateDebugReport = asyncHandler(async (req, res) => {
   \`\`\`
 
   Execution Context / Errors:
-  - Stderr Output: ${stderr || 'None'}
-  - Failed Test Case Input: ${input || 'Hidden'}
-  - Expected Output: ${expectedOutput || 'Hidden'}
-  - Actual Output: ${actualOutput || 'N/A'}`;
+  - Stderr Output: ${stderr || 'None'}`;
 
   const response = await ai.models.generateContent({
     model: 'gemini-3.6-flash',

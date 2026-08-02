@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Terminal, Play, Send, Loader2 } from 'lucide-react';
-import { useSubmissionStatus } from '../../submissions/hooks/useSubmissionStatus';
 import { getVerdictColor } from '../../../constants/verdict';
 
-export const ConsoleOutput = ({ problemId, language, code }) => {
+export const ConsoleOutput = ({ problemId, language, code, submissionStatus }) => {
   const [activeTab, setActiveTab] = useState('testcases');
-  const { isSubmitting, verdictData, submitCode } = useSubmissionStatus();
+  const { isSubmitting, verdictData, submitCode } = submissionStatus;
 
   const handleSubmit = () => {
     setActiveTab('results');

@@ -65,6 +65,7 @@ export const getSubmission = asyncHandler(async (req, res) => {
         runtime: submission.runtime,
         memory: submission.memory,
         code: submission.getDecodedCode(),
+        aiReport: submission.aiReport || '',
       },
       'Submission retrieved successfully',
     ),
