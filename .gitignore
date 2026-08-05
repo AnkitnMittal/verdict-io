@@ -1,3 +1,6 @@
+# nginx certificates
+nginx/certificates/*
+
 # Logs
 logs
 *.log

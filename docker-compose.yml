@@ -23,9 +23,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    container_name: verdictio-server
-    ports:
-      - '8000:8000'
+    expose:
+      - '8000'
     env_file:
       - ./server/.env
     volumes:
@@ -68,6 +67,17 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: verdictio-nginx
+    ports:
+      - '8000:80'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - server
     restart: unless-stopped
