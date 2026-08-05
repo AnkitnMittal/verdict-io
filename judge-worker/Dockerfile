@@ -1,10 +1,11 @@
 FROM node:20-alpine
 
+WORKDIR /app
+
 RUN apk add --no-cache docker-cli bash coreutils
 
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
 COPY . .
+
+RUN npm install
 
 CMD ["npm", "run", "dev"]
