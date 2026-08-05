@@ -78,6 +78,7 @@ services:
       - '8000:80'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certificates:/etc/nginx/certificates:ro
     depends_on:
       - server
     restart: unless-stopped
