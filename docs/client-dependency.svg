@@ -261,17 +261,17 @@
 <path fill="none" stroke="#757575" d="M924.4,-202.97C960.07,-188.73 1024.04,-164.89 1081,-152.5 1093.3,-149.83 1106.12,-147.51 1119.05,-145.49"/>
 <polygon fill="#757575" stroke="#757575" points="1119.58,-148.95 1128.95,-144.01 1118.54,-142.03 1119.58,-148.95"/>
 </g>
-<!-- lib/render.js -->
+<!-- lib/render.jsx -->
 <g id="node24" class="node">
-<title>lib/render.js</title>
-<path fill="none" stroke="#cfffac" d="M1662.33,-120C1662.33,-120 1591.67,-120 1591.67,-120 1587.83,-120 1584,-116.17 1584,-112.33 1584,-112.33 1584,-104.67 1584,-104.67 1584,-100.83 1587.83,-97 1591.67,-97 1591.67,-97 1662.33,-97 1662.33,-97 1666.17,-97 1670,-100.83 1670,-104.67 1670,-104.67 1670,-112.33 1670,-112.33 1670,-116.17 1666.17,-120 1662.33,-120"/>
-<text text-anchor="middle" x="1627" y="-104.8" font-family="Arial" font-size="14.00" fill="#cfffac">lib/render.js</text>
+<title>lib/render.jsx</title>
+<path fill="none" stroke="#cfffac" d="M1665.33,-120C1665.33,-120 1588.67,-120 1588.67,-120 1584.83,-120 1581,-116.17 1581,-112.33 1581,-112.33 1581,-104.67 1581,-104.67 1581,-100.83 1584.83,-97 1588.67,-97 1588.67,-97 1665.33,-97 1665.33,-97 1669.17,-97 1673,-100.83 1673,-104.67 1673,-104.67 1673,-112.33 1673,-112.33 1673,-116.17 1669.17,-120 1665.33,-120"/>
+<text text-anchor="middle" x="1627" y="-104.8" font-family="Arial" font-size="14.00" fill="#cfffac">lib/render.jsx</text>
 </g>
-<!-- pages/CodingArena/CodingArenaPage.jsx&#45;&gt;lib/render.js -->
+<!-- pages/CodingArena/CodingArenaPage.jsx&#45;&gt;lib/render.jsx -->
 <g id="edge50" class="edge">
-<title>pages/CodingArena/CodingArenaPage.jsx&#45;&gt;lib/render.js</title>
-<path fill="none" stroke="#757575" d="M911.15,-202.84C940.98,-179.94 1011.82,-129.71 1081,-111.5 1256.65,-65.27 1475.31,-86.68 1573.72,-100.29"/>
-<polygon fill="#757575" stroke="#757575" points="1573.32,-103.77 1583.71,-101.7 1574.3,-96.84 1573.32,-103.77"/>
+<title>pages/CodingArena/CodingArenaPage.jsx&#45;&gt;lib/render.jsx</title>
+<path fill="none" stroke="#757575" d="M911.15,-202.84C940.98,-179.94 1011.82,-129.71 1081,-111.5 1254.88,-65.74 1470.91,-86.26 1570.71,-99.88"/>
+<polygon fill="#757575" stroke="#757575" points="1570.48,-103.38 1580.86,-101.29 1571.44,-96.45 1570.48,-103.38"/>
 </g>
 <!-- features/coding&#45;arena/components/ConsoleOutput.jsx -->
 <g id="node28" class="node">
@@ -453,11 +453,11 @@
 <path fill="none" stroke="#757575" d="M1427.65,-143.39C1448.95,-144.91 1470.71,-146.46 1491.63,-147.94"/>
 <polygon fill="#757575" stroke="#757575" points="1491.61,-151.45 1501.83,-148.67 1492.11,-144.47 1491.61,-151.45"/>
 </g>
-<!-- features/ai&#45;coach/components/AICoachPanel.jsx&#45;&gt;lib/render.js -->
+<!-- features/ai&#45;coach/components/AICoachPanel.jsx&#45;&gt;lib/render.jsx -->
 <g id="edge20" class="edge">
-<title>features/ai&#45;coach/components/AICoachPanel.jsx&#45;&gt;lib/render.js</title>
-<path fill="none" stroke="#757575" d="M1427.65,-122.04C1479.96,-118.47 1534.98,-114.71 1573.77,-112.07"/>
-<polygon fill="#757575" stroke="#757575" points="1574.03,-115.56 1583.76,-111.38 1573.55,-108.57 1574.03,-115.56"/>
+<title>features/ai&#45;coach/components/AICoachPanel.jsx&#45;&gt;lib/render.jsx</title>
+<path fill="none" stroke="#757575" d="M1427.65,-122.04C1478.38,-118.58 1531.67,-114.94 1570.22,-112.31"/>
+<polygon fill="#757575" stroke="#757575" points="1570.95,-115.77 1580.69,-111.59 1570.47,-108.78 1570.95,-115.77"/>
 </g>
 <!-- features/ai&#45;coach/hooks/useAiCoach.js&#45;&gt;features/ai&#45;coach/api/aiApi.js -->
 <g id="edge21" class="edge">

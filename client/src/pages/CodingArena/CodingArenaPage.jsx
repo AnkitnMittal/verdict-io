@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { X, Sparkles } from 'lucide-react';
 
-import DOMPurify from 'dompurify';
-import md from '../../lib/render.js';
+import MarkdownRenderer from '../../lib/render.jsx';
 
 import { DifficultyBadge } from '../../components/ui/DifficultyBadge.jsx';
 import { SplitPanels } from '../../features/coding-arena/components/SplitPanels';
@@ -54,10 +53,9 @@ export const CodingArenaPage = () => {
           </div>
         </div>
       </div>
-      <div
-        className='prose prose-invert max-w-none font-sans text-slate-300 text-sm leading-relaxed'
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(md.render(statement || '')) }}
-      />
+      <div className='prose prose-invert max-w-none font-sans text-slate-300 text-sm leading-relaxed'>
+        <MarkdownRenderer content={statement || ''} />
+      </div>
     </div>
   );
 

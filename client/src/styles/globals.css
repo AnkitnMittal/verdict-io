@@ -12,6 +12,22 @@
   --font-mono: 'Fira Code', monospace;
 }
 
+.markdown-anchor {
+  margin-left: 0.5rem;
+  opacity: 0;
+  text-decoration: none;
+  color: #94a3b8;
+}
+
+h1:hover .markdown-anchor,
+h2:hover .markdown-anchor,
+h3:hover .markdown-anchor,
+h4:hover .markdown-anchor,
+h5:hover .markdown-anchor,
+h6:hover .markdown-anchor {
+  opacity: 1;
+}
+
 body {
   margin: 0;
   background-color: var(--color-dark-bg);

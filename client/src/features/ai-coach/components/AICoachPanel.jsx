@@ -1,7 +1,6 @@
 import { Sparkles, Bug, Lightbulb, RefreshCw, AlertTriangle } from 'lucide-react';
-import DOMPurify from 'dompurify';
 
-import md from '../../../lib/render.js';
+import MarkdownRenderer from '../../../lib/render.jsx';
 import { useAiCoach } from '../hooks/useAiCoach.js';
 
 export const AICoachPanel = ({ problemTitle, problemStatement, userCode, language, latestSubmission }) => {
@@ -108,12 +107,8 @@ export const AICoachPanel = ({ problemTitle, problemStatement, userCode, languag
             </button>
 
             {hintText && (
-              <div className='mt-5 p-4 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 text-xs leading-relaxed prose prose-invert max-w-none shadow-inner animate-in fade-in slide-in-from-bottom-2 duration-200'>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(md.render(hintText)),
-                  }}
-                />
+              <div className='mt-5 p-4 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 text-sm leading-relaxed prose prose-invert max-w-none shadow-inner'>
+                <MarkdownRenderer content={hintText || ''} />
               </div>
             )}
           </div>
@@ -145,12 +140,8 @@ export const AICoachPanel = ({ problemTitle, problemStatement, userCode, languag
             </button>
 
             {debugReport && (
-              <div className='mt-5 p-4 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 text-xs leading-relaxed prose prose-invert max-w-none shadow-inner animate-in fade-in slide-in-from-bottom-2 duration-200'>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(md.render(debugReport)),
-                  }}
-                />
+              <div className='mt-5 p-4 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-200 text-sm leading-relaxed prose prose-invert max-w-none shadow-inner'>
+                <MarkdownRenderer content={debugReport || ''} />
               </div>
             )}
           </div>
