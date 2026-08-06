@@ -41,6 +41,7 @@ services:
       context: ./judge-worker
       dockerfile: Dockerfile
     container_name: verdictio-worker
+    user: root
     env_file:
       - ./judge-worker/.env
     volumes:
