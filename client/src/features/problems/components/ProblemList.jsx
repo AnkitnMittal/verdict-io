@@ -24,6 +24,7 @@ export const ProblemList = ({ problems, isLoading, error }) => {
         <thead>
           <tr className='bg-slate-800 border-b border-slate-700 text-slate-400 text-sm'>
             <th className='p-4 font-medium'>Title</th>
+            <th className='p-4 font-medium w-24 hidden sm:table-cell'>Acceptance</th>
             <th className='p-4 font-medium w-32'>Difficulty</th>
             <th className='p-4 font-medium hidden md:table-cell'>Topics</th>
             <th className='p-4 font-medium w-24 text-right'>Action</th>
@@ -31,33 +32,40 @@ export const ProblemList = ({ problems, isLoading, error }) => {
         </thead>
 
         <tbody className='divide-y divide-slate-700'>
-          {problems.map((problem) => (
-            <tr key={problem._id} className='hover:bg-slate-700/50 transition-colors group'>
-              <td className='p-4'>
-                <Link to={`/problems/${problem.problemId}`} className='text-slate-200 font-medium group-hover:text-blue-400 transition-colors'>
-                  {problem.title}
-                </Link>
-              </td>
-              <td className='p-4'>
-                <DifficultyBadge difficulty={problem.difficulty} />
-              </td>
-              <td className='p-4 hidden md:table-cell'>
-                <div className='flex gap-2 flex-wrap'>
-                  {(problem.topics ?? []).slice(0, 3).map((topic) => (
-                    <span key={topic} className='text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded'>
-                      {topic}
-                    </span>
-                  ))}
-                  {problem.topics?.length > 3 && <span className='text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded'>+{problem.topics.length - 3}</span>}
-                </div>
-              </td>
-              <td className='p-4 text-right'>
-                <Link to={`/problems/${problem.problemId}`} className='text-blue-500 hover:text-blue-400 text-sm font-medium'>
-                  Solve
-                </Link>
-              </td>
-            </tr>
-          ))}
+          {problems.map((problem) => {
+            const total = problem.totalSubmissions || 0;
+            const accepted = problem.acceptedSubmissions || 0;
+            const acceptanceRate = total > 0 ? ((accepted / total) * 100).toFixed(1) : null;
+
+            return (
+              <tr key={problem._id} className='hover:bg-slate-700/50 transition-colors group'>
+                <td className='p-4'>
+                  <Link to={`/problems/${problem.problemId}`} className='text-slate-200 font-medium group-hover:text-blue-400 transition-colors'>
+                    {problem.title}
+                  </Link>
+                </td>
+                <td className='p-4 hidden sm:table-cell text-sm font-mono text-slate-300'>{acceptanceRate ? `${acceptanceRate}%` : '-'}</td>
+                <td className='p-4'>
+                  <DifficultyBadge difficulty={problem.difficulty} />
+                </td>
+                <td className='p-4 hidden md:table-cell'>
+                  <div className='flex gap-2 flex-wrap'>
+                    {(problem.topics ?? []).slice(0, 3).map((topic) => (
+                      <span key={topic} className='text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded'>
+                        {topic}
+                      </span>
+                    ))}
+                    {problem.topics?.length > 3 && <span className='text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded'>+{problem.topics.length - 3}</span>}
+                  </div>
+                </td>
+                <td className='p-4 text-right'>
+                  <Link to={`/problems/${problem.problemId}`} className='text-blue-500 hover:text-blue-400 text-sm font-medium'>
+                    Solve
+                  </Link>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
