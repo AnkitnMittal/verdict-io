@@ -1,6 +1,6 @@
 import { User } from '../models/User.js';
 
-export const createAdmin = async () => {
+export const seedAdmin = async () => {
   try {
     const existAdmin = await User.findOne({ role: 'admin' });
     if (existAdmin) {
@@ -8,12 +8,12 @@ export const createAdmin = async () => {
       return;
     }
 
-    const adminFullName = process.env.ADMIN_FULL_NAME || 'System Admin';
+    const adminUsername = process.env.ADMIN_USERNAME || 'system_admin';
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@admin.com';
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin@123456';
 
     await User.create({
-      fullName: adminFullName,
+      username: adminUsername,
       email: adminEmail,
       password: adminPassword,
       role: 'admin',

@@ -1,3 +1,10 @@
+# Filepack reports
+docs/client-content.txt
+docs/server-content.txt
+docs/worker-content.txt
+docs/docker-content.txt
+docs/nginx-content.txt
+
 # nginx certificates
 nginx/certificates/*
 

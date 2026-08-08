@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 export const RegisterForm = () => {
-  /* State variables for fullName, email, password, and error message */
-  const [fullName, setFullName] = useState('');
+  /* State variables for username, email, password, and error message */
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,7 +19,7 @@ export const RegisterForm = () => {
     setError(null);
 
     try {
-      await register({ fullName, email, password });
+      await register({ username, email, password });
 
       navigate('/login', {
         state: {
@@ -37,16 +37,16 @@ export const RegisterForm = () => {
       {/* Error message display */}
       {error && <div className='p-3 bg-red-500/10 border border-red-500 rounded text-red-500 text-sm'>{error}</div>}
 
-      {/* Full Name input field */}
+      {/* Username input field */}
       <div>
-        <label className='block text-slate-400 text-sm font-medium mb-2'>Full Name</label>
+        <label className='block text-slate-400 text-sm font-medium mb-2'>Username</label>
         <input
           type='text'
           required
           className='w-full bg-slate-900 border border-slate-700 rounded-md px-4 py-2 text-slate-50 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors'
-          value={fullName}
+          value={username}
           placeholder='John Doe'
-          onChange={(e) => setFullName(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
         />
       </div>
 

@@ -33,10 +33,10 @@ const cookieOptions = {
   @access   Public
 */
 export const registerUser = asyncHandler(async (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-  if (!fullName || !email || !password) {
-    throw new ApiError(400, 'All fields (fullName, email, password) are required');
+  if (!username || !email || !password) {
+    throw new ApiError(400, 'All fields (username, email, password) are required');
   }
 
   const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -45,7 +45,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    fullName,
+    username,
     email: email.toLowerCase(),
     password,
   });

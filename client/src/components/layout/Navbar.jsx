@@ -43,10 +43,10 @@ export const Navbar = () => {
             <div className='flex items-center gap-3'>
               <div className='flex items-center gap-2.5 bg-slate-800 border border-slate-700 rounded-full py-1 pl-1 pr-4 shadow-sm'>
                 <div className='w-8 h-8 rounded-full bg-blue-600 text-white font-semibold text-sm flex items-center justify-center border border-blue-400'>
-                  {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
+                  {user?.username ? user.username.charAt(0).toUpperCase() : 'U'}
                 </div>
 
-                <span className='text-sm font-medium text-slate-100 hidden sm:block'>{user?.fullName}</span>
+                <span className='text-sm font-medium text-slate-100 hidden sm:block'>{user?.username}</span>
               </div>
 
               <button
