@@ -9,6 +9,7 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import problemRoutes from './routes/problemRoutes.js';
 import submissionRoutes from './routes/submissionsRoutes.js';
+import leaderboardRoutes from './routes/leaderboardRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/problems', problemRoutes);
 app.use('/api/profile', userRoutes);
 app.use('/api/submissions', submissionRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/ai', aiRoutes);
 
 /* Health check Route to verify if the API is running */

@@ -23,6 +23,10 @@ export const Navbar = () => {
                   Problems
                 </Link>
 
+                <Link className='text-slate-400 hover:text-slate-50 transition-colors' to='/leaderboard'>
+                  Leaderboard
+                </Link>
+
                 {/* Dynamically shown option for Admin users */}
                 {isAdmin && (
                   <Link
