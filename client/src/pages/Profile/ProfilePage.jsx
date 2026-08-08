@@ -2,7 +2,6 @@ import { useParams } from 'react-router-dom';
 import { useProfileStats } from '../../features/profile/hooks/useProfileStats';
 import { StatsPanel } from '../../features/profile/components/StatsPanel';
 import { SubmissionHeatmap } from '../../features/profile/components/SubmissionHeatmap';
-import { ActivityChart } from '../../features/profile/components/ActivityChart';
 
 export const ProfilePage = () => {
   const { username } = useParams();
@@ -64,7 +63,6 @@ export const ProfilePage = () => {
         {/* Right Column: Visualizations */}
         <div className='xl:col-span-2 space-y-8'>
           <SubmissionHeatmap heatmapData={heatmap} />
-          <ActivityChart heatmapData={heatmap} />
         </div>
       </div>
     </div>
