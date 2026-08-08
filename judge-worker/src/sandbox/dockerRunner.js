@@ -47,18 +47,20 @@ const getRunArgs = (langConfig, tempDir) => {
   return [
     'run',
     '--rm',
-    '-i',                                             // Interactive mode
-    '--read-only',                                    // Root filesystem is immutable
-    '--tmpfs=/tmp:rw,noexec,nosuid,size=64m',         // Mount /tmp as tmpfs
-    '--network=none',                                 // Disable network access
-    `--memory=${langConfig.memoryLimitMB}m`,          // Hard RAM cap
-    `--memory-swap=${langConfig.memoryLimitMB}m`,     // Disable swap
-    '--pids-limit=64',                                // Prevent fork bombs  
-    '--cap-drop=ALL',                                 // Drop root capabilities
-    '--security-opt=no-new-privileges:true',          // Prevent privilege escalation
-    `--user=${uid}:${gid}`,                           // Map host user permissions natively
-    `-v`, `${tempDir}:/sandbox`,                      // Mount execution directory
-    `-w`, `/sandbox`,                                 // Set working directory
+    '-i',
+    '--read-only',
+    '--tmpfs=/tmp:rw,noexec,nosuid,size=64m',
+    '--network=none',
+    `--memory=${langConfig.memoryLimitMB}m`,
+    `--memory-swap=${langConfig.memoryLimitMB}m`,
+    '--pids-limit=64',
+    '--cap-drop=ALL',
+    '--security-opt=no-new-privileges:true',
+    `--user=${uid}:${gid}`,
+    `-v`,
+    `${tempDir}:/sandbox`,
+    `-w`,
+    `/sandbox`,
     langConfig.image,
   ];
 };
@@ -85,13 +87,6 @@ const spawnDockerProcess = (dockerArgs, input = '', timeoutMs = 5000) => {
       if (stderr.length < 10 * 1024 * 1024) stderr += chunk.toString();
     });
 
-    child.stdin.on('error', () => {});
-
-    if (input) {
-      child.stdin.write(input);
-    }
-    child.stdin.end();
-
     child.on('close', (code, signal) => {
       clearTimeout(timer);
       resolve({ code, signal, stdout: stdout.trim(), stderr: stderr.trim(), isTimeout });
@@ -105,14 +100,14 @@ const spawnDockerProcess = (dockerArgs, input = '', timeoutMs = 5000) => {
 };
 
 /**
- * Executes the provided code in a Docker sandbox environment.
+ * Executes the provided code for ALL test cases in a single Docker sandbox environment.
  * @param {Object} langConfig - The language configuration object.
  * @param {string} code - The source code to be executed.
- * @param {string} input - The input to be provided to the code during execution.
+ * @param {Array} testCases - Array of test case objects.
  */
-export const executeDockerSandbox = async (langConfig, code, input = '') => {
-  if (!langConfig || !code) {
-    throw new ApiError(400, 'Invalid language configuration or code provided.');
+export const executeDockerSandbox = async (langConfig, code, testCases = []) => {
+  if (!langConfig || !code || testCases.length === 0) {
+    throw new ApiError(400, 'Invalid language configuration, code, or test cases provided.');
   }
 
   const { image, filename, timeoutMs, memoryLimitMB, compileCommand, runCommand } = langConfig;
@@ -132,55 +127,80 @@ export const executeDockerSandbox = async (langConfig, code, input = '') => {
 
       if (compileResult.code !== 0 || compileResult.isTimeout) {
         const rawCE = compileResult.stderr || compileResult.stdout || 'Compilation failed or Timed Out';
-        return {
-          verdict: 'CE',
-          stdout: '',
-          stderr: cleanErrorOutput(rawCE, filename),
-          runtime: 0,
-          memory: 0,
-        };
+        return [{ verdict: 'CE', stdout: '', stderr: cleanErrorOutput(rawCE, filename), runtime: 0, memory: 0 }];
       }
     }
 
-    /* --- Execution Phase --- */
-    const runArgs = [...getRunArgs(langConfig, tempDir), 'sh', '-c', runCommand];
+    /* --- Execution Phase (Batched) --- */
+    const numTestCases = testCases.length;
 
-    const startTime = process.hrtime.bigint();
-    const runResult = await spawnDockerProcess(runArgs, input, timeoutMs);
-    const endTime = process.hrtime.bigint();
-    const runtimeMs = Number(endTime - startTime) / 1e6;
-
-    let verdict = 'AC';
-    let stderrOut = cleanErrorOutput(runResult.stderr, filename);
-
-    // --- Hardened POSIX Signal & Exit Code Mapping ---
-    if (runResult.isTimeout || runResult.signal === 'SIGKILL') {
-      verdict = 'TLE';
-      stderrOut = `Time Limit Exceeded: Process terminated after ${timeoutMs}ms.`;
-    } else if (runResult.code === 137) {
-      verdict = 'MLE';
-      stderrOut = `Memory Limit Exceeded: Process killed (Exceeded ${memoryLimitMB}MB allocation).`;
-    } else if (runResult.code === 139) {
-      verdict = 'RE';
-      stderrOut = `Runtime Error (SIGSEGV): Segmentation Fault. Core Dumped.\n\nHint: You are likely accessing an array out of bounds, dereferencing a null pointer, or causing a stack overflow via infinite recursion.`;
-    } else if (runResult.code === 136) {
-      verdict = 'RE';
-      stderrOut = `Runtime Error (SIGFPE): Floating Point Exception.\n\nHint: Check your code for division by zero or modulo by zero operations.`;
-    } else if (runResult.code === 134) {
-      verdict = 'RE';
-      stderrOut = `Runtime Error (SIGABRT): Process Aborted.\n\nHint: This is often caused by a failed assertion or an unhandled exception thrown in C++.`;
-    } else if (runResult.code !== 0) {
-      verdict = 'RE';
-      stderrOut = stderrOut || `Runtime Error: Process exited with nonzero status code ${runResult.code}`;
+    for (let i = 0; i < numTestCases; i++) {
+      await fs.writeFile(path.join(tempDir, `input_${i}.txt`), testCases[i].input, 'utf8');
     }
 
-    return {
-      verdict,
-      stdout: runResult.stdout,
-      stderr: stderrOut,
-      runtime: Math.min(runtimeMs, timeoutMs),
-      memory: 0,
-    };
+    const timeoutSecs = Math.max(1, Math.ceil(timeoutMs / 1000));
+
+    const scriptContent = `#!/bin/sh
+for i in $(seq 0 ${numTestCases - 1}); do
+  timeout -s KILL ${timeoutSecs}s sh -c "${runCommand} < input_$i.txt > output_$i.txt 2> error_$i.txt"
+  echo $? > exit_$i.txt
+done
+`;
+    await fs.writeFile(path.join(tempDir, 'runner.sh'), scriptContent, 'utf8');
+    await fs.chmod(path.join(tempDir, 'runner.sh'), 0o777);
+
+    const runArgs = [...getRunArgs(langConfig, tempDir), 'sh', './runner.sh'];
+    const totalContainerTimeoutMs = timeoutMs * numTestCases + 10000;
+
+    const startTime = process.hrtime.bigint();
+    const runResult = await spawnDockerProcess(runArgs, '', totalContainerTimeoutMs);
+    const endTime = process.hrtime.bigint();
+    const avgRuntimeMs = Number(endTime - startTime) / 1e6 / numTestCases;
+
+    const results = [];
+
+    /* --- Output Processing Phase --- */
+    for (let i = 0; i < numTestCases; i++) {
+      let stdout = '';
+      let stderr = '';
+      let exitCode = -1;
+
+      try {
+        stdout = await fs.readFile(path.join(tempDir, `output_${i}.txt`), 'utf8');
+        stderr = await fs.readFile(path.join(tempDir, `error_${i}.txt`), 'utf8');
+        const codeStr = await fs.readFile(path.join(tempDir, `exit_${i}.txt`), 'utf8');
+        exitCode = parseInt(codeStr.trim(), 10);
+      } catch (err) {
+        if (runResult.isTimeout) exitCode = 137;
+      }
+
+      let verdict = 'AC';
+      let stderrOut = cleanErrorOutput(stderr, filename);
+
+      if (exitCode === 137 || exitCode === 124 || exitCode === 143) {
+        verdict = 'TLE';
+        stderrOut = `Time Limit Exceeded: Process terminated after ${timeoutMs}ms.`;
+      } else if (exitCode === 139) {
+        verdict = 'RE';
+        stderrOut = `Runtime Error (SIGSEGV): Segmentation Fault. Core Dumped.`;
+      } else if (exitCode === 136) {
+        verdict = 'RE';
+        stderrOut = `Runtime Error (SIGFPE): Floating Point Exception.`;
+      } else if (exitCode !== 0) {
+        verdict = 'RE';
+        stderrOut = stderrOut || `Runtime Error: Process exited with nonzero status code ${exitCode}`;
+      }
+
+      results.push({
+        verdict,
+        stdout: stdout.trim(),
+        stderr: stderrOut,
+        runtime: Math.min(avgRuntimeMs, timeoutMs),
+        memory: 0,
+      });
+    }
+
+    return results;
   } catch (error) {
     throw new ApiError(500, `Error during Docker sandbox execution: ${error.message}`);
   } finally {

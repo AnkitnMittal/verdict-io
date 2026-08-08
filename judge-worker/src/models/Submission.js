@@ -46,14 +46,13 @@ const submissionSchema = new mongoose.Schema(
     submittedAt: {
       type: Date,
       default: Date.now,
-      expires: '90d',
     },
   },
   { timestamps: true },
 );
 
 /* Pre-save hook to compress the code before saving to the database */
-submissionSchema.pre('save', async function (next) {
+submissionSchema.pre('save', async function () {
   if (this.isModified('code')) {
     const raw = Buffer.isBuffer(this.code) ? this.code : Buffer.from(this.code, 'utf8');
     this.code = await deflate(raw);
@@ -61,7 +60,7 @@ submissionSchema.pre('save', async function (next) {
 });
 
 /* Middleware for findOneAndUpdate to compress code */
-submissionSchema.pre('findOneAndUpdate', async function (next) {
+submissionSchema.pre('findOneAndUpdate', async function () {
   const update = this.getUpdate();
   const rawCode = update.code ?? update.$set?.code;
   if (rawCode !== undefined && !Buffer.isBuffer(rawCode)) {
