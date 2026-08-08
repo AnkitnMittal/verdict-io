@@ -44,6 +44,14 @@ const problemSchema = new mongoose.Schema(
         code: { type: String, required: true },
       },
     ],
+    totalSubmissions: {
+      type: Number,
+      default: 0,
+    },
+    acceptedSubmissions: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true },
 );

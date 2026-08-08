@@ -27,18 +27,28 @@ const userSchema = new mongoose.Schema(
       enum: ['guest', 'user', 'premium', 'admin'],
       default: 'user',
     },
-    score: {
-      type: Number,
-      default: 0,
-    },
-    problemsSolved: {
-      type: Number,
-      default: 0,
-    },
     refreshToken: {
       type: String,
       default: null,
     },
+    stats: {
+      score: { type: Number, default: 0 },
+      totalSubmissions: { type: Number, default: 0 },
+      acceptedSubmissions: { type: Number, default: 0 },
+      solvedCount: { type: Number, default: 0 },
+      easySolved: { type: Number, default: 0 },
+      mediumSolved: { type: Number, default: 0 },
+      hardSolved: { type: Number, default: 0 },
+      currentStreak: { type: Number, default: 0 },
+      longestStreak: { type: Number, default: 0 },
+      lastActiveDate: { type: Date, default: null },
+    },
+    solvedProblems: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Problem',
+      },
+    ],
   },
   { timestamps: true },
 );
@@ -60,7 +70,7 @@ userSchema.methods.generateAccessToken = function () {
     {
       _id: this._id,
       email: this.email,
-      fullName: this.fullName,
+      username: this.username,
       role: this.role,
     },
     process.env.ACCESS_TOKEN_SECRET,

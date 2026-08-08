@@ -5,10 +5,11 @@ import App from '../App';
 import { HomePage } from '../pages/Home/HomePage';
 import { LoginPage } from '../pages/Auth/LoginPage';
 import { RegisterPage } from '../pages/Auth/RegisterPage';
-import { ProblemExplorerPage } from '../pages/ProblemExplorer/ProblemExplorerPage';
 
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute';
+import { ProblemExplorerPage } from '../pages/ProblemExplorer/ProblemExplorerPage';
 import { ProblemManagerPage } from '../pages/Admin/ProblemManagerPage';
+import { ProfilePage } from '../pages/Profile/ProfilePage';
 import { CodingArenaPage } from '../pages/CodingArena/CodingArenaPage';
 
 export const router = createBrowserRouter([
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
         children: [
           { path: 'problems', element: <ProblemExplorerPage /> },
           { path: 'problems/:id', element: <CodingArenaPage /> },
+          { path: 'profile/:username', element: <ProfilePage /> },
           {
             element: <ProtectedRoute allowedRoles={['admin']} />,
             children: [

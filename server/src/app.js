@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import { ApiError } from './utils/ApiError.js';
 import { logger } from './utils/logger.js';
 import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import problemRoutes from './routes/problemRoutes.js';
 import submissionRoutes from './routes/submissionsRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true, limit: '16kb' }));
 /* Route handlers */
 app.use('/api/auth', authRoutes);
 app.use('/api/problems', problemRoutes);
+app.use('/api/profile', userRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/ai', aiRoutes);
 
