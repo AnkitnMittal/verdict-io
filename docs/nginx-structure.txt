@@ -1,0 +1,7 @@
+nginx/
+├── certificates
+│   ├── nginx-selfsigned.crt
+│   └── nginx-selfsigned.key
+└── nginx.conf
+
+2 directories, 3 files

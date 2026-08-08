@@ -1,0 +1,50 @@
+.
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── client
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── node_modules
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   ├── src
+│   └── vite.config.js
+├── docker
+│   └── sandboxes
+├── docker-compose.yml
+├── docs
+│   ├── client-content.txt
+│   ├── client-dependency.svg
+│   ├── client-structure.txt
+│   ├── docker-content.txt
+│   ├── docker-structure.txt
+│   ├── nginx-content.txt
+│   ├── nginx-structure.txt
+│   ├── server-content.txt
+│   ├── server-dependency.svg
+│   ├── server-structure.txt
+│   ├── worker-content.txt
+│   ├── worker-dependency.svg
+│   └── worker-structure.txt
+├── judge-worker
+│   ├── Dockerfile
+│   ├── node_modules
+│   ├── package-lock.json
+│   ├── package.json
+│   └── src
+├── layout.txt
+├── nginx
+│   ├── certificates
+│   └── nginx.conf
+└── server
+    ├── Dockerfile
+    ├── node_modules
+    ├── package-lock.json
+    ├── package.json
+    └── src
+
+16 directories, 32 files

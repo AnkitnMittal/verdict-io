@@ -1,0 +1,99 @@
+client/src/
+├── App.jsx
+├── api
+│   └── axiosInstance.js
+├── app
+│   ├── providers.jsx
+│   ├── router.jsx
+│   └── store.js
+├── components
+│   ├── feedback
+│   ├── layout
+│   │   └── Navbar.jsx
+│   └── ui
+│       └── DifficultyBadge.jsx
+├── constants
+│   ├── languages.js
+│   └── verdict.js
+├── features
+│   ├── admin
+│   │   ├── api
+│   │   │   └── adminApi.js
+│   │   └── components
+│   │       └── ProblemForm.jsx
+│   ├── ai-coach
+│   │   ├── api
+│   │   │   └── aiApi.js
+│   │   ├── components
+│   │   │   └── AICoachPanel.jsx
+│   │   └── hooks
+│   │       └── useAiCoach.js
+│   ├── auth
+│   │   ├── api
+│   │   │   └── authApi.js
+│   │   ├── authSlice.js
+│   │   ├── components
+│   │   │   ├── LoginForm.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   └── RegisterForm.jsx
+│   │   └── hooks
+│   │       └── useAuth.js
+│   ├── coding-arena
+│   │   ├── components
+│   │   │   ├── ConsoleOutput.jsx
+│   │   │   ├── LanguageSelector.jsx
+│   │   │   ├── MonacoEditorWrapper.jsx
+│   │   │   └── SplitPanels.jsx
+│   │   └── hooks
+│   │       └── useCodeRunner.js
+│   ├── leaderboard
+│   │   ├── api
+│   │   │   └── leaderboardApi.js
+│   │   ├── components
+│   │   │   └── RankingsTable.jsx
+│   │   └── hooks
+│   │       └── useLeaderboard.js
+│   ├── problems
+│   │   ├── api
+│   │   │   └── problemsApi.js
+│   │   ├── components
+│   │   │   └── ProblemList.jsx
+│   │   └── hooks
+│   │       ├── useProblemDetail.js
+│   │       └── useProblems.js
+│   ├── profile
+│   │   ├── api
+│   │   │   └── profileApi.js
+│   │   ├── components
+│   │   │   ├── StatsPanel.jsx
+│   │   │   └── SubmissionHeatmap.jsx
+│   │   └── hooks
+│   │       └── useProfileStats.js
+│   └── submissions
+│       ├── api
+│       │   └── submissionsApi.js
+│       └── hooks
+│           └── useSubmissionStatus.js
+├── lib
+│   └── render.jsx
+├── main.jsx
+├── pages
+│   ├── Admin
+│   │   └── ProblemManagerPage.jsx
+│   ├── Auth
+│   │   ├── LoginPage.jsx
+│   │   └── RegisterPage.jsx
+│   ├── CodingArena
+│   │   └── CodingArenaPage.jsx
+│   ├── Home
+│   │   └── HomePage.jsx
+│   ├── Leaderboard
+│   │   └── LeaderboardPage.jsx
+│   ├── ProblemExplorer
+│   │   └── ProblemExplorerPage.jsx
+│   └── Profile
+│       └── ProfilePage.jsx
+└── styles
+    └── globals.css
+
+48 directories, 49 files

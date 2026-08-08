@@ -1,0 +1,40 @@
+server/src/
+├── app.js
+├── config
+│   ├── db.js
+│   └── redis.js
+├── controllers
+│   ├── aiController.js
+│   ├── authController.js
+│   ├── leaderboardController.js
+│   ├── problemsController.js
+│   ├── submissionsController.js
+│   └── userController.js
+├── middlewares
+│   └── authMiddleware.js
+├── models
+│   ├── Problem.js
+│   ├── Submission.js
+│   ├── TestCase.js
+│   └── User.js
+├── prompts
+│   └── aiPrompts.js
+├── queues
+│   └── submissionQueue.js
+├── routes
+│   ├── aiRoutes.js
+│   ├── authRoutes.js
+│   ├── leaderboardRoutes.js
+│   ├── problemRoutes.js
+│   ├── submissionsRoutes.js
+│   └── userRoutes.js
+├── seeds
+│   └── seedAdmin.js
+├── server.js
+└── utils
+    ├── ApiError.js
+    ├── ApiResponse.js
+    ├── asyncHandler.js
+    └── logger.js
+
+10 directories, 28 files
