@@ -61,7 +61,7 @@ function CodeBlock({ language, className, code, children, ...props }) {
         setCopied(false);
       }, 2000);
     } catch {
-      // Ignore clipboard failures (unsupported browser or permissions)
+      // Ignore clipboard failures
     }
   };
 
@@ -122,7 +122,41 @@ function TableRenderer({ children }) {
   );
 }
 
+const HeadingRenderers = {
+  h1: ({ children, ...props }) => (
+    <h1 className='mt-8 mb-4 border-b border-slate-800 pb-2 text-3xl font-bold tracking-tight text-slate-100' {...props}>
+      {children}
+    </h1>
+  ),
+  h2: ({ children, ...props }) => (
+    <h2 className='mt-6 mb-3 border-b border-slate-800/60 pb-1 text-2xl font-semibold tracking-tight text-slate-100' {...props}>
+      {children}
+    </h2>
+  ),
+  h3: ({ children, ...props }) => (
+    <h3 className='mt-5 mb-2 text-xl font-semibold text-slate-200' {...props}>
+      {children}
+    </h3>
+  ),
+  h4: ({ children, ...props }) => (
+    <h4 className='mt-4 mb-2 text-lg font-medium text-slate-200' {...props}>
+      {children}
+    </h4>
+  ),
+  h5: ({ children, ...props }) => (
+    <h5 className='mt-3 mb-1 text-base font-medium text-slate-300' {...props}>
+      {children}
+    </h5>
+  ),
+  h6: ({ children, ...props }) => (
+    <h6 className='mt-3 mb-1 text-sm font-medium uppercase tracking-wider text-slate-400' {...props}>
+      {children}
+    </h6>
+  ),
+};
+
 const components = {
+  ...HeadingRenderers,
   code: CodeRenderer,
   a: LinkRenderer,
   img: ImageRenderer,
