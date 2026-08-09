@@ -29,7 +29,8 @@ server/src/
 │   ├── submissionsRoutes.js
 │   └── userRoutes.js
 ├── seeds
-│   └── seedAdmin.js
+│   ├── seedAdmin.js
+│   └── seedProblems.js
 ├── server.js
 └── utils
     ├── ApiError.js
@@ -37,4 +38,4 @@ server/src/
     ├── asyncHandler.js
     └── logger.js
 
-10 directories, 28 files
+10 directories, 29 files

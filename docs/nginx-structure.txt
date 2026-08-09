@@ -1,7 +1,3 @@
-nginx/
-├── certificates
-│   ├── nginx-selfsigned.crt
-│   └── nginx-selfsigned.key
-└── nginx.conf
+nginx/src/  [error opening dir]
 
-2 directories, 3 files
+0 directories, 0 files
